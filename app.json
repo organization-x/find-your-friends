@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "c1-t4",
-    "slug": "c1-t4",
+    "name": "Find my Friends",
+    "slug": "findmyfriends",
+    "owner": "ai-camp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
