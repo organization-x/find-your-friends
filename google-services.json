@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "523384189636",
+    "project_id": "find-my-friends-207e5",
+    "storage_bucket": "find-my-friends-207e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:523384189636:android:9e223f25c82ff80aeacf91",
+        "android_client_info": {
+          "package_name": "com.aicamp.findmyfriends"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "523384189636-37t9cp0qjch906pmtpm65jj7qt4qg240.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkbB8X9GdBnorUKYhw0cR0PXAOTicg9-M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "523384189636-37t9cp0qjch906pmtpm65jj7qt4qg240.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "523384189636-b5lmlo27s13fhd6o1qa02kujbrm25ubd.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.aicamp.findmyfriends"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
