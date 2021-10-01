@@ -41,6 +41,7 @@
     "react-native-image-base64": "^0.1.4",
     "react-native-paper": "^4.9.2",
     "react-native-progress-circle": "^2.1.0",
+    "react-native-responsive-screen": "^1.4.2",
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.0.0",
     "react-native-status-bar-height": "^2.6.0",
