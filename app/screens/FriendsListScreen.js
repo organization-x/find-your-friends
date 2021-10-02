@@ -1,24 +1,23 @@
-import React from 'react';
-import {Text, Button, ImageBackground, StyleSheet, SafeAreaView } from 'react-native';
+import React from 'react'
+import { Text, Button, ImageBackground, StyleSheet, SafeAreaView } from 'react-native'
 
-function FriendsListScreen(props) {
+function FriendsListScreen (props) {
+  return (
 
-    return (
-        
-        <SafeAreaView style = {styles.background}>
-            <Button
-                title = "Add Friends!"
-            />
+    <SafeAreaView style={styles.background}>
+      <Button
+        title='Add Friends!'
+      />
 
-        </SafeAreaView>
-        
-    );
+    </SafeAreaView>
+
+  )
 }
 
 const styles = StyleSheet.create({
-    background: {
-        backgroundColor: "green"
-    }
-});
+  background: {
+    backgroundColor: 'green'
+  }
+})
 
-export default FriendsListScreen;
+export default FriendsListScreen
