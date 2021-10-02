@@ -11,7 +11,7 @@ function ARScreen(props) {
                 <Image 
                     style = {styles.settingsBtn}
 
-                    source = {require('../assets/gear.png')
+                    source = {require('../assets/friends_icon_1.png')
                 } />
             </TouchableOpacity>  
 
