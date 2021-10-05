@@ -1,14 +1,20 @@
 import React from 'react'
 import { Text, Image, ImageBackground, StyleSheet, View, TouchableOpacity } from 'react-native'
 
-function ARScreen (props) {
+function ARScreen ({navigation}) {
+  
+  const friendsPressHandler = () => {
+    navigation.navigate('FriendsListScreen')
+
+  }
+  
   return (
     <ImageBackground
       style={styles.background}
       source={require('../assets/WOTR-in-autumn.jpg')}
     >
 
-      <TouchableOpacity onPress={settingsPressed}>
+      <TouchableOpacity onPress={friendsPressHandler}>
         <Image
           style={styles.settingsBtn}
 

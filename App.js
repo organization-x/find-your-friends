@@ -11,8 +11,8 @@ export default function App () {
   const heightFlex = Dimensions.get('screen').height
 
   return (
-  // <Navigator />
-  // <ARScreen />
-    <FriendsListScreen />
+    <Navigator />
+    // <ARScreen />
+    //<FriendsListScreen />
   )
 }
