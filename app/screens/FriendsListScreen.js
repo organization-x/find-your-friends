@@ -2,7 +2,6 @@ import React from 'react'
 import { Text, Button, ImageBackground, StyleSheet, SafeAreaView } from 'react-native'
 
 function FriendsListScreen (props) {
-  
   const ARScreenPressHandler = () => {
     props.navigation.navigate('ARScreen')
   }
@@ -10,7 +9,8 @@ function FriendsListScreen (props) {
   return (
 
     <SafeAreaView style={styles.background}>
-      <Button onPress = {ARScreenPressHandler}
+      <Button
+        onPress={ARScreenPressHandler}
         title='Add Friends!'
       />
 

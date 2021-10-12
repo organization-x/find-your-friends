@@ -1,33 +1,69 @@
-import React from 'react'
-import { Text, Image, ImageBackground, StyleSheet, View, TouchableOpacity } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { Text, Image, ImageBackground, StyleSheet, TouchableOpacity, View, Pressable, Dimensions } from 'react-native'
+import { StatusBar } from 'expo-status-bar';
+import { Camera } from 'expo-camera';
 
 function ARScreen ({navigation}) {
   
   const friendsPressHandler = () => {
-    navigation.navigate('FriendsListScreen')
+    console.log("Friends Button Pressed!");
+    navigation.navigate('FriendsListScreen');
 
   }
   
+  const [hasPermission, setHasPermission] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestPermissionsAsync();
+      setHasPermission(status === 'granted');
+    })();
+  }, []);
+
+  if (hasPermission === null) {
+    return <View />;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
+
   return (
-    <ImageBackground
-      style={styles.background}
-      source={require('../assets/WOTR-in-autumn.jpg')}
-    >
-
-      <TouchableOpacity onPress={friendsPressHandler}>
-        <Image
-          style={styles.settingsBtn}
-
-          source={require('../assets/friends_icon_1.png')}
-        />
-      </TouchableOpacity>
-
-      <Text styles={styles.temporaryARText}>AR Screen Goes Here</Text>
-    </ImageBackground>
+    <View style={{ flex: 1 }}>
+      <Camera style={{ flex: 1 }} type={type}>
+        <TouchableOpacity 
+          onPress={friendsPressHandler}
+          >
+            <Image
+              style = {styles.settingsBtn}
+              source={require('../assets/friends_icon_1.png')}
+            />
+        </TouchableOpacity>
+        
+      </Camera>
+    </View>
   )
 }
 
+var dim = Dimensions.get('screen').width/100;
+
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  Placement: {
+    backgroundColor: 'green',
+    //width: dim,
+    //height: dim,
+    top: '15%',
+    right: '100%',
+    //alignSelf: 'flex-end'
+  },
+
   background: {
     flex: 1,
     alignItems: 'center'
@@ -35,14 +71,11 @@ const styles = StyleSheet.create({
   settingsBtn: {
     width: 50,
     height: 50,
-    alignSelf: 'flex-end',
-    top: '162.5%',
-    right: '-35%'
+    //alignSelf: 'flex-end',
+    //top: '162.5%',
+    left: (dim*75),
+    top: (dim*10)
   },
-  // This is really temporary because it is only for the text. Should be removed when actual Camera gets here.
-  temporaryARText: {
-    position: 'absolute'
-  }
 })
 
 const settingsPressed = () => console.log('Settings Button was pressed.')

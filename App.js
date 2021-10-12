@@ -13,6 +13,6 @@ export default function App () {
   return (
     <Navigator />
     // <ARScreen />
-    //<FriendsListScreen />
+    // <FriendsListScreen />
   )
 }
