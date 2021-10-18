@@ -1,67 +1,65 @@
 import React, { useState, useEffect } from 'react'
 import { Text, Image, ImageBackground, StyleSheet, TouchableOpacity, View, Pressable, Dimensions } from 'react-native'
-import { StatusBar } from 'expo-status-bar';
-import { Camera } from 'expo-camera';
+import { StatusBar } from 'expo-status-bar'
+import { Camera } from 'expo-camera'
 
-function ARScreen ({navigation}) {
-  
+function ARScreen ({ navigation }) {
   const friendsPressHandler = () => {
-    console.log("Friends Button Pressed!");
-    navigation.navigate('FriendsListScreen');
-
+    console.log('Friends Button Pressed!')
+    navigation.navigate('FriendsListScreen')
   }
-  
-  const [hasPermission, setHasPermission] = useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
+
+  const [hasPermission, setHasPermission] = useState(null)
+  const [type, setType] = useState(Camera.Constants.Type.back)
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
-    })();
-  }, []);
+      const { status } = await Camera.requestPermissionsAsync()
+      setHasPermission(status === 'granted')
+    })()
+  }, [])
 
   if (hasPermission === null) {
-    return <View />;
+    return <View />
   }
   if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+    return <Text>No access to camera</Text>
   }
 
   return (
     <View style={{ flex: 1 }}>
       <Camera style={{ flex: 1 }} type={type}>
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={friendsPressHandler}
-          >
-            <Image
-              style = {styles.settingsBtn}
-              source={require('../assets/friends_icon_1.png')}
-            />
+        >
+          <Image
+            style={styles.settingsBtn}
+            source={require('../assets/friends_icon_1.png')}
+          />
         </TouchableOpacity>
-        
+
       </Camera>
     </View>
   )
 }
 
-var dim = Dimensions.get('screen').width/100;
+const dim = Dimensions.get('screen').width / 100
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
 
   Placement: {
     backgroundColor: 'green',
-    //width: dim,
-    //height: dim,
+    // width: dim,
+    // height: dim,
     top: '15%',
-    right: '100%',
-    //alignSelf: 'flex-end'
+    right: '100%'
+    // alignSelf: 'flex-end'
   },
 
   background: {
@@ -71,11 +69,11 @@ const styles = StyleSheet.create({
   settingsBtn: {
     width: 50,
     height: 50,
-    //alignSelf: 'flex-end',
-    //top: '162.5%',
-    left: (dim*75),
-    top: (dim*10)
-  },
+    // alignSelf: 'flex-end',
+    // top: '162.5%',
+    left: (dim * 75),
+    top: (dim * 10)
+  }
 })
 
 const settingsPressed = () => console.log('Settings Button was pressed.')
