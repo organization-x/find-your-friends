@@ -5,6 +5,7 @@ import FriendsListScreen from './app/screens/FriendsListScreen'
 import Navigator from './routes/homeStack'
 //import FirebaseStuff from './app/firebaseTest'
 import firebase from "firebase";
+import { getDatabase, ref, onValue } from 'firebase/database';
 
 export default function App () {
   console.log('App Executed')
@@ -19,8 +20,10 @@ export default function App () {
     appId: "1:523384189636:web:fd12e5f6726640aaeacf91",
     measurementId: "G-MH2FB7K1YH"
   };
-  
-  const firebaseApp = firebase.initializeApp(firebaseConfig);
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
 
   const heightFlex = Dimensions.get('screen').height
 
