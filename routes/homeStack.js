@@ -12,7 +12,7 @@ const screens = {
     screen: LoginScreen
   },
 
-  LoadingScreen:{
+  LoadingScreen: {
     screen: LoadingScreen
   },
 

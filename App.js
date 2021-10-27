@@ -1,35 +1,39 @@
 import React from 'react'
-import { Dimensions, Platform } from 'react-native'
-import ARScreen from './app/screens/ARScreen'
-import FriendsListScreen from './app/screens/FriendsListScreen'
+import { Text, Dimensions, Platform } from 'react-native'
 import Navigator from './routes/homeStack'
-//import FirebaseStuff from './app/firebaseTest'
-import firebase from "firebase";
-import { getDatabase, ref, onValue } from 'firebase/database';
+
+// import FirebaseStuff from './app/firebaseTest'
+import firebase from 'firebase'
+import { getDatabase, ref, onValue } from 'firebase/database'
+import { firebaseConfig } from './app/firebaseTest'
+
+// firebase.initializeApp(firebaseConfig);
 
 export default function App () {
   console.log('App Executed')
-  console.log('Platform is: ' + Platform.OS + ' Dimensions are: ' + Dimensions.get('screen').scale)
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyDEKDFIbbbameAcQprTrCaOfCCF6FSajCI",
-    authDomain: "find-my-friends-207e5.firebaseapp.com",
-    projectId: "find-my-friends-207e5",
-    storageBucket: "find-my-friends-207e5.appspot.com",
-    messagingSenderId: "523384189636",
-    appId: "1:523384189636:web:fd12e5f6726640aaeacf91",
-    measurementId: "G-MH2FB7K1YH"
-  };
+  console.log('Platform is: ' + Platform.OS)
+  console.log('Scale is: ' + Dimensions.get('screen').scale + ' Height is: ' + Dimensions.get('screen').height)
 
   if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
+    firebase.initializeApp(firebaseConfig)
+  } else {
+    firebase.app() // if already initialized, use that one
   }
 
-  const heightFlex = Dimensions.get('screen').height
+  // A function that can be used to write data to the database
+
+  /* function writeUserData(userId, name, email, lat, long) {
+    firebase.database().ref('users/' + userId).set({
+      username: name,
+      email: email,
+      lattitude : lat,
+      longitude: long
+    });
+  }
+
+  writeUserData("TestUser2", "Tyler", "insertMyEmailHere", 10.442, -49.21); */
 
   return (
     <Navigator />
-    // <ARScreen />
-    // <FriendsListScreen />
   )
 }

@@ -8,63 +8,79 @@ import { getAuth, onAuthStateChanged, signInWithCredential, GoogleAuthProvider }
 
 class LoginScreen extends Component {
 
-  isUserEqual = (googleUser, firebaseUser) => {
-    if (firebaseUser) {
-      const providerData = firebaseUser.providerData;
-      for (let i = 0; i < providerData.length; i++) {
-        if (providerData[i].providerId === GoogleAuthProvider.PROVIDER_ID &&
-            providerData[i].uid === googleUser.getBasicProfile().getId()) {
-          // We don't need to reauth the Firebase connection.
-          return true;
+    isUserEqual = (googleUser, firebaseUser) => {
+        if (firebaseUser) {
+          var providerData = firebaseUser.providerData;
+          for (var i = 0; i < providerData.length; i++) {
+            if (providerData[i].providerId === firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
+                providerData[i].uid === googleUser.getBasicProfile().getId()) {
+              // We don't need to reauth the Firebase connection.
+              return true;
+            }
+          }
         }
+        return false;
       }
-    }
-    return false;
-  }
-  
-  onSignIn = (googleUser) => {
-    console.log('Google Auth Response', googleUser);
-    // We need to register an Observer on Firebase Auth to make sure auth is initialized.
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      unsubscribe();
-      // Check if we are already signed-in Firebase with the correct user.
-      if (!UserEqual(googleUser, firebaseUser)) {
-        // Build Firebase credential with the Google ID token.
-        const credential = GoogleAuthProvider.credential(
-          googleUser.idToken,
-          googleUser.accessToken);
-  
-        // Sign in with credential from the Google user.
-        signInWithCredential(auth, credential).catch((error) => {
-          // Handle Errors here.
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          // The email of the user's account used.
-          const email = error.email;
-          // The credential that was used.
-          const credential = GoogleAuthProvider.credentialFromError(error);
-          // ...
-        });
 
-        firebase
-          .auth()
-          .auth.Auth.signInAndRetrieveDataWithCredential()
-          .then(function (result){
-            console.log('user signed in');
-            firebase 
-              .database()
-              .ref('/users/' + result.user.uid)
-              .set({
-                gmail: result.user.email,
-                first_name: result.additionalUserInfo.profile.given_name,
-                last_name: result.additionalUserInfo.profile.family_name
-              })
-          });
-      } else {
-        console.log('User already signed-in Firebase.');
+    onSignIn = googleUser => {
+        console.log('Google Auth Response', googleUser);
+        // We need to register an Observer on Firebase Auth to make sure auth is initialized.
+        var unsubscribe = firebase.auth().onAuthStateChanged((firebaseUser) => {
+          unsubscribe();
+          // Check if we are already signed-in Firebase with the correct user.
+          if (!this.isUserEqual(googleUser, firebaseUser)) {
+            // Build Firebase credential with the Google ID token.
+            var credential = firebase.auth.GoogleAuthProvider.credential(
+                googleUser.idToken,
+                googleUser.accessToken
+            );
+      
+            // Sign in with credential from the Google user.
+            firebase
+            .auth()
+            .signInWithCredential(credential)
+            .then(function(result){
+                console.log("Sign in successful!");
+                if(result.additionalUserInfo.isNewUser)
+                {
+                    firebase
+                    .database()
+                    .ref("/users/" + result.user.uid)
+                    .set({
+                        gmail: result.user.email,
+                        profile_picture: result.additionalUserInfo.profile.picture,
+                        first_name: result.additionalUserInfo.profile.given_name,
+                        last_name: result.additionalUserInfo.profile.family_name,
+                        created_at: Date.now(),
+                        lattitude: 41.421, //These need actual values
+                        longitude: -66.24 //These need actual values
+                    })
+                }else{
+                    firebase
+                    .database()
+                    .ref('/users/' + result.user.uid).update({
+                        last_logged_in:Date.now(),
+                        longitude: 6.5,
+                        lattitude: -4.1
+                    })
+                }
+                
+            }).catch((error) => {
+              // Handle Errors here.
+              var errorCode = error.code;
+              var errorMessage = error.message;
+              // The email of the user's account used.
+              var email = error.email;
+              // The firebase.auth.AuthCredential type that was used.
+              var credential = error.credential;
+              // ...
+            });
+          } else {
+            console.log('User already signed-in Firebase.');
+          }
+        }
+        ).bind(this);
       }
-    });
-  }
 
     signInWithGoogleAsync = async() => {
         console.log("Attempting Sign in");
@@ -76,10 +92,9 @@ class LoginScreen extends Component {
             });
 
             if (result.type == 'success') {
-                console.log("Successful Sign in!");
-                onSignIn(result);
-                //console.log(result.user.email);
-                this.props.navigation.navigate('FriendsListScreen');
+                //this.props.navigation.navigate('FriendsListScreen');
+                this.onSignIn(result);
+                this.props.navigation.navigate('LoadingScreen');
                 return result.accessToken;
             } else {
                 return { cancelled: true };
@@ -90,18 +105,16 @@ class LoginScreen extends Component {
     }
 
     render(){
-  return (
+        return (
+            <SafeAreaView style={styles.background}>
+            <Button
+                style = {styles.button}
+                onPress={() => this.signInWithGoogleAsync()}
+                title='Login with Google'
+            />
 
-    <SafeAreaView style={styles.background}>
-      <Button
-        style = {styles.button}
-        onPress={() => this.signInWithGoogleAsync()}
-        title='Login with Google'
-      />
-
-    </SafeAreaView>
-
-  )
+            </SafeAreaView>
+        )
     }
 }
 

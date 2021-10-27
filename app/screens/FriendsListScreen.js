@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text, Button, ImageBackground, StyleSheet, SafeAreaView } from 'react-native'
 
-function FriendsListScreen ({navigation}) {
+function FriendsListScreen ({ navigation }) {
   const ARScreenPressHandler = () => {
     navigation.navigate('ARScreen')
   }

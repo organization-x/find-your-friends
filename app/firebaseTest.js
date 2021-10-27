@@ -1,22 +1,10 @@
-import { initializeApp } from 'firebase/app';
-
-// Optionally import the services that you want to use
-//import {...} from "firebase/auth";
-//import {...} from "firebase/database";
-//import {...} from "firebase/firestore";
-//import {...} from "firebase/functions";
-//import {...} from "firebase/storage";
-
-// Initialize Firebase
-const firebaseConfig = {
-  apiKey: 'api-key',
-  authDomain: 'project-id.firebaseapp.com',
-  databaseURL: 'https://project-id.firebaseio.com',
-  projectId: 'project-id',
-  storageBucket: 'project-id.appspot.com',
-  messagingSenderId: 'sender-id',
-  appId: 'app-id',
-  measurementId: 'G-measurement-id',
-};
-
-initializeApp(firebaseConfig);
+export const firebaseConfig = {
+  apiKey: 'AIzaSyDEKDFIbbbameAcQprTrCaOfCCF6FSajCI',
+  authDomain: 'find-my-friends-207e5.firebaseapp.com',
+  databaseURL: 'https://find-my-friends-207e5-default-rtdb.firebaseio.com',
+  projectId: 'find-my-friends-207e5',
+  storageBucket: 'find-my-friends-207e5.appspot.com',
+  messagingSenderId: '523384189636',
+  appId: '1:523384189636:web:fd12e5f6726640aaeacf91',
+  measurementId: 'G-MH2FB7K1YH'
+}
