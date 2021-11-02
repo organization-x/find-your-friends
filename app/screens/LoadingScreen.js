@@ -1,57 +1,39 @@
-import React from 'react'
-import {StyleSheet, ActivityIndicator, View } from 'react-native'
-import firebase from 'firebase'
-
-import * as Google from 'expo-google-app-auth';
-import { Component } from 'react';
+import React, { Component } from 'react';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import firebase from 'firebase';
 
 class LoadingScreen extends Component {
+  componentDidMount() {
+    this.checkIfLoggedIn();
+  }
 
+  checkIfLoggedIn = () => {
+    firebase.auth().onAuthStateChanged(
+      function(user) {
+        console.log('AUTH STATE CHANGED CALLED ')
+        if (user) {
+          this.props.navigation.navigate('ARScreen');
+        } else {
+          this.props.navigation.navigate('LoginScreen');
+        }
+      }.bind(this)
+    );
+  };
 
-    /* writeUserData = (userId, name, email, lat, long) => {
-        firebase.database().ref('users/' + userId).set({
-          username: name,
-          email: email,
-          lattitude : lat,
-          longitude: long
-        });
-      } */
-
-    componentDidMount(){
-        this.checkIfLoggedIn();
-    }
-
-    checkIfLoggedIn = () =>{
-        firebase.auth().onAuthStateChanged(user => {
-            if(user){
-                //This needs to be replaced with actual numbers
-                //writeUserData(user.getIdToken, user.name, user.email, 10.442, -49.21);
-                this.props.navigation.navigate('FriendsListScreen');
-            }else{
-                this.props.navigation.navigate('LoginScreen');
-            }
-        }).bind(this);
-    }
-
-    render(){
-        return(
-            <View style = {styles.container}>
-                <ActivityIndicator size = "large"/>
-            </View>
-        );
-    }
+  render() {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 }
+export default LoadingScreen;
 
 const styles = StyleSheet.create({
-  background: {
-    backgroundColor: 'green'
-  },
-
   container: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center'
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
   }
-})
-
-export default LoadingScreen
+});

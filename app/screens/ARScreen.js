@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { Text, Image, ImageBackground, StyleSheet, TouchableOpacity, View, Pressable, Dimensions } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 import { Camera } from 'expo-camera'
+import firebase from 'firebase'
+import AakashLocation from '../components/LocationComponent'
+import LocationComponent from '../components/LocationComponent'
 
 function ARScreen ({ navigation }) {
   const friendsPressHandler = () => {
@@ -37,7 +40,7 @@ function ARScreen ({ navigation }) {
             source={require('../assets/friends_icon_1.png')}
           />
         </TouchableOpacity>
-
+        <LocationComponent />
       </Camera>
     </View>
   )
@@ -72,7 +75,7 @@ const styles = StyleSheet.create({
     // alignSelf: 'flex-end',
     // top: '162.5%',
     left: (dim * 75),
-    top: (dim * 10)
+    top: (dim * 20)
   }
 })
 

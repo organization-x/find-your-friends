@@ -12,26 +12,13 @@ import { firebaseConfig } from './app/firebaseTest'
 export default function App () {
   console.log('App Executed')
   console.log('Platform is: ' + Platform.OS)
-  console.log('Scale is: ' + Dimensions.get('screen').scale + ' Height is: ' + Dimensions.get('screen').height)
+  console.log('Scale is: ' + Dimensions.get('screen').scale + ' Height is: ' + Dimensions.get('screen').height + '\n')
 
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig)
   } else {
     firebase.app() // if already initialized, use that one
   }
-
-  // A function that can be used to write data to the database
-
-  /* function writeUserData(userId, name, email, lat, long) {
-    firebase.database().ref('users/' + userId).set({
-      username: name,
-      email: email,
-      lattitude : lat,
-      longitude: long
-    });
-  }
-
-  writeUserData("TestUser2", "Tyler", "insertMyEmailHere", 10.442, -49.21); */
 
   return (
     <Navigator />
