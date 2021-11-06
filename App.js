@@ -1,11 +1,9 @@
 import React from 'react'
 import { Text, Dimensions, Platform } from 'react-native'
 import Navigator from './routes/homeStack'
-
-// import FirebaseStuff from './app/firebaseTest'
 import firebase from 'firebase'
 import { getDatabase, ref, onValue } from 'firebase/database'
-import { firebaseConfig } from './app/firebaseTest'
+import { firebaseConfig } from './app/config'
 
 // firebase.initializeApp(firebaseConfig);
 

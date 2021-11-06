@@ -24,3 +24,13 @@ export function writeUserData (lat, long) {
     last_logged_in: Date.now()
   })
 }
+
+export function readLocation(user){
+  
+  let location;
+    firebase.database().ref('/users/' + user).on('value', snapshot => {
+      location = [snapshot.val().lattitude, snapshot.val().longitude];
+    });
+  
+    return location;
+}
