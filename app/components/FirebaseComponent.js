@@ -4,6 +4,22 @@ import { StatusBar } from 'expo-status-bar'
 import { Camera } from 'expo-camera'
 import firebase from 'firebase'
 
+
+if (!firebase.apps.length) {
+	firebase.initializeApp({
+	  apiKey: 'AIzaSyDEKDFIbbbameAcQprTrCaOfCCF6FSajCI',
+	  authDomain: 'find-my-friends-207e5.firebaseapp.com',
+	  databaseURL: 'https://find-my-friends-207e5-default-rtdb.firebaseio.com',
+	  projectId: 'find-my-friends-207e5',
+	  storageBucket: 'find-my-friends-207e5.appspot.com',
+	  messagingSenderId: '523384189636',
+	  appId: '1:523384189636:web:fd12e5f6726640aaeacf91',
+	  measurementId: 'G-MH2FB7K1YH'
+	})
+  } else {
+	firebase.app() // if already initialized, use that one
+  }
+
 class FirebaseComponent extends React.Component {
   render () {
     return (
@@ -25,12 +41,14 @@ export function writeUserData (lat, long) {
   })
 }
 
+
+mockLocations = {"XAcuKHuAXib6JovnqaWpYrJMwRU2": [120,-80], "iRYUmGV2kEagUAazosuLO5UPjOu1": [-54,12], "UwEJEtRgFZY0wc7rgBOcXpb4Dln2": [100,35]}
 export function readLocation(user){
   
-  let location;
+  	var long; var lat;
+	
     firebase.database().ref('/users/' + user).on('value', snapshot => {
-      location = [snapshot.val().lattitude, snapshot.val().longitude];
+      long = snapshot.val().lattitude; lat = snapshot.val().longitude
     });
-  
-    return location;
+    return [long, lat];
 }

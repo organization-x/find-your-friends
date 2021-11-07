@@ -13,18 +13,43 @@ const { height, width } = Dimensions.get('window');
 
 var keys = {"Tyler": "XAcuKHuAXib6JovnqaWpYrJMwRU2", "Alexa": "iRYUmGV2kEagUAazosuLO5UPjOu1", "Asher": "UwEJEtRgFZY0wc7rgBOcXpb4Dln2"}
 
+var pos = []
+
 function ARScreen ({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null)
   const [type, setType] = useState(Camera.Constants.Type.back)
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
+  const [location, setLocation] = useState([47.773791,-122.206028]);
   const [subscription, setSubscription] = useState(null);
   const [magnetometer, setMagnetometer] = useState(0); 
 
-  
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestPermissionsAsync()
+      setHasPermission(status === 'granted')
+
+      /*let { status2 } = await Location.requestForegroundPermissionsAsync();
+      if (status2 === 'granted') {
+        let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
+        console.log(location)
+        setLocation(location);
+      }*/
+      
+    })();
+
+    setSubscription(
+      Magnetometer.addListener((data) => {
+        setMagnetometer(data);
+      })
+    );
+ 
+    return () => {
+      if(subscription) {subscription.remove();}
+      setSubscription(null);
+    };
+  }, [])
 
   function angleBetween(thisPos, otherPos){
-    return Math.atan2(otherPos[1] - thisPos[0],otherPos[0] - thisPos[1])
+    return Math.atan2(otherPos[1] - thisPos[0], otherPos[0] - thisPos[1])
   }
    
   function angle (sensor, otherPos) {
@@ -40,16 +65,16 @@ function ARScreen ({ navigation }) {
    
       angle = ((d-a)/Math.PI + 1/2 )*width;
     }
-    console.log(angle)
     return angle;
   };
 
   function renderFriends(){
     var friends = []
-    var pos = []
-    for(let i of Object.keys(keys)){pos.push(readLocation(i))}
-    for(var i of pos){
-      friends.push(<View style={{backgroundColor: "#42f572",width:50,height:50,borderRadius:25,position: 'absolute', left: angle(magnetometer, i)-25}} key={i}></View>)
+    pos = []
+    for(let i of Object.values(keys)){pos.push(readLocation(i))}
+    
+    for(var i in pos){
+      friends.push(<View key={i} style={{backgroundColor: "#42f572", width:50,height:50, borderRadius:25, position: 'absolute', left: angle(magnetometer, pos[i])-25}} ></View>)
     }
     return friends
   }
@@ -67,48 +92,12 @@ function ARScreen ({ navigation }) {
     navigation.navigate('MapScreen')
   }
 
-  
-
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestPermissionsAsync()
-      setHasPermission(status === 'granted')
-    })()
-
-
-
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    })();
-
-
-
-    setSubscription(
-      Magnetometer.addListener((data) => {
-        setMagnetometer(data);
-      })
-    );
- 
-    return () => {
-      if(subscription) {subscription.remove();}
-      setSubscription(null);
-    };
-  }, [])
-
   if (hasPermission === null) {
     return <View />
   }
   if (hasPermission === false) {
     return <Text>No access to camera</Text>
   }
-
   return (
     <View style={styles.container}>
       <Camera style={styles.camera} type={type}>
