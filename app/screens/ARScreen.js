@@ -27,12 +27,12 @@ function ARScreen ({ navigation }) {
       const { status } = await Camera.requestPermissionsAsync()
       setHasPermission(status === 'granted')
 
-      /*let { status2 } = await Location.requestForegroundPermissionsAsync();
+      let { status2 } = await Location.requestForegroundPermissionsAsync();
       if (status2 === 'granted') {
         let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
         console.log(location)
-        setLocation(location);
-      }*/
+        setLocation([location.coords.longitude, location.coords.latitude]);
+      }
       
     })();
 
@@ -69,12 +69,12 @@ function ARScreen ({ navigation }) {
   };
 
   function renderFriends(){
-    var friends = []
     pos = []
     for(let i of Object.values(keys)){pos.push(readLocation(i))}
-    
+
+    var friends = []
     for(var i in pos){
-      friends.push(<View key={i} style={{backgroundColor: "#42f572", width:50,height:50, borderRadius:25, position: 'absolute', left: angle(magnetometer, pos[i])-25}} ></View>)
+      friends.push(<View key={i} style={{backgroundColor: "#42f572", width:50, height:50, borderRadius:25, position: 'absolute', left: Number(angle(magnetometer, pos[i]))-25, marginTop: 500}} ></View>)
     }
     return friends
   }
@@ -101,7 +101,7 @@ function ARScreen ({ navigation }) {
   return (
     <View style={styles.container}>
       <Camera style={styles.camera} type={type}>
-        {renderFriends()}
+        <View style={{backgroundColor: "#42f572", width:50,height:50, borderRadius:25, position: 'absolute', left: Number(angle(magnetometer, [-54,12]))-25}} ></View>
         <View style={styles.touchView}> 
           <TouchableOpacity
             style={styles.mapsTouch}
