@@ -4,9 +4,8 @@ import { StatusBar } from 'expo-status-bar'
 import { Camera } from 'expo-camera'
 import firebase from 'firebase'
 
-
 if (!firebase.apps.length) {
-	firebase.initializeApp({
+  firebase.initializeApp({
 	  apiKey: 'AIzaSyDEKDFIbbbameAcQprTrCaOfCCF6FSajCI',
 	  authDomain: 'find-my-friends-207e5.firebaseapp.com',
 	  databaseURL: 'https://find-my-friends-207e5-default-rtdb.firebaseio.com',
@@ -15,10 +14,12 @@ if (!firebase.apps.length) {
 	  messagingSenderId: '523384189636',
 	  appId: '1:523384189636:web:fd12e5f6726640aaeacf91',
 	  measurementId: 'G-MH2FB7K1YH'
-	})
-  } else {
-	firebase.app() // if already initialized, use that one
-  }
+  })
+} else {
+  firebase.app() // if already initialized, use that one
+}
+
+const friends = []
 
 class FirebaseComponent extends React.Component {
   render () {
@@ -41,14 +42,40 @@ export function writeUserData (lat, long) {
   })
 }
 
+export function readLocation (user) {
+  	let long; let lat
 
-mockLocations = {"XAcuKHuAXib6JovnqaWpYrJMwRU2": [120,-80], "iRYUmGV2kEagUAazosuLO5UPjOu1": [-54,12], "UwEJEtRgFZY0wc7rgBOcXpb4Dln2": [100,35]}
-export function readLocation(user){
-  
-  	var long; var lat;
-	
-    firebase.database().ref('/users/' + user).on('value', snapshot => {
-      long = snapshot.val().lattitude; lat = snapshot.val().longitude
-    });
-    return [long, lat];
+  firebase.database().ref('/users/' + user).on('value', snapshot => {
+    long = snapshot.val().lattitude; lat = snapshot.val().longitude
+  })
+
+  console.log('Location is' + long + ' ' + lat)
+  return [long, lat]
+}
+
+export function currentUser () {
+  return firebase.auth().currentUser.uid
+}
+
+export function makeFriends (friendToAdd) {
+  let friendsList
+  firebase.database().ref('/friends/' + firebase.auth().currentUser.uid + '/added').on('value', snapshot => {
+    friendsList = snapshot.val()
+  })
+
+  friendsList.push(friendToAdd)
+
+  firebase.database().ref('/friends/' + firebase.auth().currentUser.uid).update({
+    added: friendsList
+  })
+  return 'completed'
+}
+
+export function getFriends () {
+  firebase.database().ref('/friends/' + firebase.auth().currentUser.uid + '/added').on('value', snapshot => {
+    const friendsList = snapshot.val()
+
+    // This does not return correctly
+    return (friendsList)
+  })
 }

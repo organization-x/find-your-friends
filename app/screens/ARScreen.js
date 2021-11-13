@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { Text, Image, ImageBackground, StyleSheet, TouchableOpacity, View, Pressable, Dimensions ,SafeAreaView} from 'react-native'
-import { StatusBar } from 'expo-status-bar'
+import { Text, Image, StyleSheet, TouchableOpacity, View, Dimensions } from 'react-native'
 import { Camera } from 'expo-camera'
-import firebase from 'firebase'
 import LocationComponent from '../components/LocationComponent'
-import {readLocation} from '../components/FirebaseComponent'
+import { readLocation } from '../components/FirebaseComponent'
 
 import { Magnetometer } from 'expo-sensors'
-import * as Location from 'expo-location';
+import * as Location from 'expo-location'
 
-const { height, width } = Dimensions.get('window');
+const { height, width } = Dimensions.get('window')
 
-var keys = {"Tyler": "XAcuKHuAXib6JovnqaWpYrJMwRU2", "Alexa": "iRYUmGV2kEagUAazosuLO5UPjOu1", "Asher": "UwEJEtRgFZY0wc7rgBOcXpb4Dln2"}
+const keys = { Tyler: 'XAcuKHuAXib6JovnqaWpYrJMwRU2', Alexa: 'iRYUmGV2kEagUAazosuLO5UPjOu1', Asher: 'UwEJEtRgFZY0wc7rgBOcXpb4Dln2' }
 
 let pos;
 
@@ -39,22 +37,21 @@ function angle (sensor, thisPos, otherPos) {
 function ARScreen ({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null)
   const [type, setType] = useState(Camera.Constants.Type.back)
-  const [location, setLocation] = useState([47.773791,-122.206028]);
-  const [subscription, setSubscription] = useState(null);
-  const [magnetometer, setMagnetometer] = useState(0); 
+  const [location, setLocation] = useState([47.773791, -122.206028])
+  const [subscription, setSubscription] = useState(null)
+  const [magnetometer, setMagnetometer] = useState(0)
 
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestPermissionsAsync()
       setHasPermission(status === 'granted')
 
-      let { status2 } = await Location.requestForegroundPermissionsAsync();
+      const { status2 } = await Location.requestForegroundPermissionsAsync()
       if (status2 === 'granted') {
         let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
         setLocation(location);
       }
-      
-    })();
+    })()
 
     setSubscription(
       Magnetometer.addListener((data) => {
@@ -63,9 +60,9 @@ function ARScreen ({ navigation }) {
     );
 
     return () => {
-      if(subscription) {subscription.remove();}
-      setSubscription(null);
-    };
+      if (subscription) { subscription.remove() }
+      setSubscription(null)
+    }
   }, [])
 
   const friendsPressHandler = () => {
@@ -73,7 +70,7 @@ function ARScreen ({ navigation }) {
     navigation.navigate('FriendsListScreen')
   }
 
-  const mapsPressHandler = () =>{
+  const mapsPressHandler = () => {
     console.log('Maps Button Pressed!')
     navigation.navigate('MapScreen')
   }
@@ -119,7 +116,7 @@ function ARScreen ({ navigation }) {
             />
           </TouchableOpacity>
         </View>
-        <View styles = {styles.viewBottom}/>
+        <View styles={styles.viewBottom} />
         <LocationComponent />
         {friends}
       </Camera>
@@ -132,12 +129,18 @@ const dim = Dimensions.get('screen').width / 100
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection:'column',
+    flexDirection: 'column',
     justifyContent: 'space-around'
   },
 
-  viewBottom:{
-    flex:1
+  viewBottom: {
+    flex: 1
+  },
+  camera: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'center'
   },
   camera:{
     flex:1,
