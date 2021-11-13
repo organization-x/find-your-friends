@@ -13,7 +13,28 @@ const { height, width } = Dimensions.get('window');
 
 var keys = {"Tyler": "XAcuKHuAXib6JovnqaWpYrJMwRU2", "Alexa": "iRYUmGV2kEagUAazosuLO5UPjOu1", "Asher": "UwEJEtRgFZY0wc7rgBOcXpb4Dln2"}
 
-var pos = []
+let pos;
+
+let friends;
+
+function angleBetween(thisPos, otherPos){
+  return Math.atan2(otherPos[0] - thisPos[0], otherPos[1] - thisPos[1])
+}
+ 
+function angle (sensor, thisPos, otherPos) {
+  let angle = width/2;
+  if (sensor) {
+    let x = sensor[0]; let z = sensor[1];
+ 
+    var d = Math.atan2(z, x)
+    var a = angleBetween(thisPos, otherPos)
+   
+    if(a > 0 && d<a-Math.PI){d+=2*Math.PI}
+    else if(a < 0 && d>Math.PI+a){d-=2*Math.PI}
+    angle = ((a-d)/Math.PI+(1/2))*width;
+  }
+  return angle
+};
 
 function ARScreen ({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null)
@@ -30,57 +51,22 @@ function ARScreen ({ navigation }) {
       let { status2 } = await Location.requestForegroundPermissionsAsync();
       if (status2 === 'granted') {
         let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
-        console.log(location)
-        setLocation([location.coords.longitude, location.coords.latitude]);
+        setLocation(location);
       }
       
     })();
 
     setSubscription(
       Magnetometer.addListener((data) => {
-        setMagnetometer(data);
+        setMagnetometer([data.x, data.z]);
       })
     );
- 
+
     return () => {
       if(subscription) {subscription.remove();}
       setSubscription(null);
     };
   }, [])
-
-  function angleBetween(thisPos, otherPos){
-    return Math.atan2(otherPos[1] - thisPos[0], otherPos[0] - thisPos[1])
-  }
-   
-  function angle (sensor, otherPos) {
-    let angle = 0;
-    if (sensor) {
-      let { x, y, z } = sensor;
-   
-      var d = Math.atan2(z, x)
-      var a = angleBetween(location, otherPos)
-     
-      if(a > 0 && d<a-Math.PI){d+=2*Math.PI}
-      else if(a < 0 && d>Math.PI+a){d-=2*Math.PI}
-   
-      angle = ((d-a)/Math.PI + 1/2 )*width;
-    }
-    return angle;
-  };
-
-  function renderFriends(){
-    pos = []
-    for(let i of Object.values(keys)){pos.push(readLocation(i))}
-
-    var friends = []
-    for(var i in pos){
-      friends.push(<View key={i} style={{backgroundColor: "#42f572", width:50, height:50, borderRadius:25, position: 'absolute', left: Number(angle(magnetometer, pos[i]))-25, marginTop: 500}} ></View>)
-    }
-    return friends
-  }
-
-
-
 
   const friendsPressHandler = () => {
     console.log('Friends Button Pressed!')
@@ -92,16 +78,26 @@ function ARScreen ({ navigation }) {
     navigation.navigate('MapScreen')
   }
 
+  pos = []
+  for(let i of Object.values(keys)){pos.push(readLocation(i))}
+
+  friends = []
+  for(var i in pos){
+    friends.push(<View key={i} style={{backgroundColor: "#42f572", width:50, height:50, borderRadius:25, position: 'absolute', left: Number(angle(magnetometer, location, pos[i]))-25, marginTop: 500}} ></View>)
+  }
+
   if (hasPermission === null) {
     return <View />
   }
   if (hasPermission === false) {
     return <Text>No access to camera</Text>
   }
+  if (magnetometer===0) {
+    return <Text>Sensor Error</Text>
+  }
   return (
     <View style={styles.container}>
       <Camera style={styles.camera} type={type}>
-        <View style={{backgroundColor: "#42f572", width:50,height:50, borderRadius:25, position: 'absolute', left: Number(angle(magnetometer, [-54,12]))-25}} ></View>
         <View style={styles.touchView}> 
           <TouchableOpacity
             style={styles.mapsTouch}
@@ -112,6 +108,7 @@ function ARScreen ({ navigation }) {
               source={require('../assets/map_icon.png')}
             />
           </TouchableOpacity>
+          <View styles={styles.logo}><Image styles={styles.logo} source={require("../assets/logo.png")}/></View>
           <TouchableOpacity
             style={styles.settingsTouch}
             onPress={friendsPressHandler}
@@ -124,6 +121,7 @@ function ARScreen ({ navigation }) {
         </View>
         <View styles = {styles.viewBottom}/>
         <LocationComponent />
+        {friends}
       </Camera>
     </View>
   )
@@ -143,40 +141,36 @@ const styles = StyleSheet.create({
   },
   camera:{
     flex:1,
-    flexDirection:'column',
-    justifyContent:"space-around",
-    alignItems:'center'
+    backgroundColor:"#fff",
   },
   touchView:{
-    flex:1,
+    width: width,
+    height: dim*20,
     flexDirection:'row',
-    top:dim*20,
-    
+    justifyContent:'space-around',
+    alignContent:'center',
+    backgroundColor:"#555"
   },  
-  settingsTouch:{
-    alignSelf:'flex-start',
-    left:dim*25
+  settingsTouch:{ 
+    justifyContent:"center",
+    height:dim*20,
   },
   mapsTouch:{
-    alignSelf:'flex-start',
-    right:dim*25
+    justifyContent:"center"
   },
   settingsBtn: {
-    width: 50,
-    height: 50,
-    
-    // alignSelf: 'flex-end',
-    // top: '162.5%',
-    //left: (dim * 75),
-    //top: (dim * 20)
+    width: dim*15,
+    height: dim*15,
   },
   mapsBtn:{
-    width: 954/ 954*50, //Units are from
-    height: 1430/ 954*50,
-    // alignSelf: 'flex-end',
-    // top: '162.5%',
-    //left: (dim * 150),
-    //top: (dim * 20)
+    height: 715/477*dim*10,
+    width:dim*10
+  },
+  logo:{
+    width: 15,
+    height: 15,
+    backgroundColor:"#111",
+    
   },
   background: {
     flex: 1,

@@ -7,6 +7,10 @@ import LocationComponent from '../components/LocationComponent'
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
+function Exit(){
+  navigation.navigate('ARScreen')
+}
+
 export default class MapScreen extends Component {
   
 
@@ -52,7 +56,6 @@ render() {
             }}
             showsUserLocation={true}
             zoomEnabled={true}>
-
             <Marker description="Alexa"
               coordinate={{latitude: 38.856850, longitude: -77.356260}}>
               <View style={styles.marker}></View>
@@ -74,6 +77,7 @@ render() {
               <View style={styles.marker}></View>
             </Marker>
         </ MapView>
+        <TouchableOpacity onPress={Exit}><Text>Go Back</Text></TouchableOpacity>
       </View>
       );
     } else {
@@ -94,6 +98,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   map: {
+    position:"absolute",
+    top:0, left:0,
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
   },
