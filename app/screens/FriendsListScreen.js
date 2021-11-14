@@ -1,17 +1,27 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { render } from 'react-dom'
 import { View, Text, TextInput, Button, ImageBackground, StyleSheet, SafeAreaView } from 'react-native'
 import { makeFriends, currentUser, getFriends, readLocation } from '../components/FirebaseComponent'
 
 function FriendsListScreen ({ navigation }) {
   const [user, setUser] = useState('')
-  const [friends, setFriends] = useState(getFriends)
   const [addedFriend, setAddedFriend] = useState('')
   const [revealCode, setRevealCode] = useState(true)
+  const [friends, setFriends] = useState("Loading...");
 
   const backButtonNavigator = () => {
     navigation.navigate('ARScreen')
   }
+
+  useEffect(() => {
+    getFriends().then(x => {
+      setFriends(x);
+      console.log("Friends is now:" + friends);
+    }).catch(error => {
+      console.log("error occurred");
+    })
+  }, [])
+
 
   const revealFriendCode = () => {
     // This flips revealCode from true to false or false to true.
