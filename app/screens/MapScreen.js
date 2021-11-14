@@ -21,66 +21,68 @@ function loadMarkers(){
         return m
 }
 
-export default class MapScreen extends Component {
-  
+function MapScreen() {
 
-  state = {
-    location: null,
-    errorMessage: null,
-    loaded: false
-  };
+  const [location, setLocation] = useState(null);
+  const [errorMessage, seterrorMessage] = useState(null);
+  const [loaded, setLoaded] = useState('false');
 
-  componentDidMount () {
-    this._getLocationAsync();
-  };
-
-  _getLocationAsync = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-
-    if (status !== 'granted') {
-      this.setState({
-        errorMessage: 'Permission to access location was denied',
-        loaded: true
-      });
-    }
-
-    const userlocation = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
-    this.setState({ location: userlocation, loaded: true, errorMessage: null });
-
-    console.log(JSON.stringify(this.state.location));
-    console.log(JSON.stringify(this.state.location.coords.latitude));
-    console.log(JSON.stringify(this.state.location.coords.longitude));
-
-  };
-render() {
-    
-    if (this.state.loaded) {
-      return (
-        <View style={styles.container}>
-          <MapView
-            style={styles.map}
-            region={{
-              latitude: this.state.location.coords.latitude,
-              longitude: this.state.location.coords.longitude,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421
-            }}
-            showsUserLocation={true}
-            zoomEnabled={true}>
-
-            {loadMarkers()}
-        </ MapView>
-      </View>
-      );
-    } else {
-      return (
-        <View style={styles.container}>
-          <Text>Waiting for current location...</Text>
-        </View>
-      );
-    }
+	const ARScreenPressHandler = () => {
+    navigation.navigate('ARScreen')
   }
+
+  useEffect(() => {
+    _getLocationAsync = async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status !== 'granted') {
+          seterrorMessage('Permission to access location was denied');
+          setLoaded('true');
+      } 
+
+      const userlocation = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
+      setLocation(userlocation);
+      seterrorMessage(null);
+      setLoaded('true');
+   
+    };
+
+   	_getLocationAsync();
+
+  });
+
+  if (loaded == 'true') {
+    return (
+       <View style={styles.container}>
+         <MapView 
+           style={styles.map}
+           region={{
+             latitude: location.coords.latitude,
+             longitude: location.coords.longitude,
+             latitudeDelta: 0.0922,
+             longitudeDelta: 0.0421
+           }} 
+           showsUserLocation={true}
+           zoomEnabled={true}>
+           {loadMarkers()}
+       </ MapView>
+       <TouchableOpacity onPress={ARScreenPressHandler} style={styles.button}>
+        <Text style={styles.buttonText}>Back</Text>
+      </TouchableOpacity>
+     </View>
+     );
+   } else {
+     return (
+       <View style={styles.container}>
+         <Text>Waiting for current location...</Text>
+       </View>
+     );
+   }
 }
+
+export default MapScreen;
+
+const dim = Dimensions.get('screen').width / 100
 
 const styles = StyleSheet.create({
   container: {
@@ -99,4 +101,21 @@ const styles = StyleSheet.create({
     backgroundColor: 'purple',
     borderRadius: 25
   },
+	button: {
+    backgroundColor: "green",
+		margin: 16,
+    bottom:dim*20,
+		right:dim*35,
+		alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 4,
+    elevation: 3,
+  },
+  buttonText: {
+    fontSize: 20,
+    color: '#fff',
+		letterSpacing: 0.25,
+  }, 
 });
