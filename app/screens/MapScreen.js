@@ -1,12 +1,25 @@
 import React, {Component, useState, useEffect } from 'react'
-import { Text, Image, Button, ImageBackground, StyleSheet, TouchableOpacity, View, Pressable, Dimensions } from 'react-native'
+import { Text, Image, ImageBackground, StyleSheet, TouchableOpacity, View, Pressable, Dimensions } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 import { Camera } from 'expo-camera'
 import firebase from 'firebase'
 import LocationComponent from '../components/LocationComponent'
 import MapView, { Marker } from 'react-native-maps';
+import {readLocation} from '../components/FirebaseComponent'
 import * as Location from 'expo-location';
-import { GreaterStencilFunc } from 'three';
+
+var keys = {"Tyler": "XAcuKHuAXib6JovnqaWpYrJMwRU2", "Alexa": "iRYUmGV2kEagUAazosuLO5UPjOu1", "Asher": "UwEJEtRgFZY0wc7rgBOcXpb4Dln2"}
+
+function loadMarkers(){
+        m = []
+        for(var i of Object.keys(keys)){
+            m.push(<Marker description={i} key={i}
+            coordinate={readLocation(keys[i])}>
+            <View style={styles.marker}></View>
+          </Marker>)
+        }
+        return m
+}
 
 function MapScreen() {
 
@@ -55,26 +68,7 @@ function MapScreen() {
            }} 
            showsUserLocation={true}
            zoomEnabled={true}>
-            <Marker description="Alexa"
-             coordinate={{latitude: 38.856850, longitude: -77.356260}}>
-             <View style={styles.marker}></View>
-           </Marker>
-           <Marker description="Charlotte"
-             coordinate={{latitude: 38.857360, longitude: -77.393370}}>
-             <View style={styles.marker}></View>
-           </Marker>
-           <Marker description="Tyler"
-             coordinate={{latitude: 38.895756, longitude: -77.372213}}>
-             <View style={styles.marker}></View>
-           </Marker>
-           <Marker description="Asher"
-             coordinate={{latitude: 38.906910, longitude: -77.401530}}>
-             <View style={styles.marker}></View>
-           </Marker>
-           <Marker description="Jackson"
-             coordinate={{latitude: 38.867182, longitude: -77.366666}}>
-             <View style={styles.marker}></View>
-           </Marker>
+           {loadMarkers()}
        </ MapView>
        <TouchableOpacity onPress={ARScreenPressHandler} style={styles.button}>
         <Text style={styles.buttonText}>Back</Text>
