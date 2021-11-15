@@ -21,7 +21,6 @@ const screens = {
   ARScreen: {
     screen: ARScreen
   },
-
   MapScreen: {
     screen: MapScreen
   }
