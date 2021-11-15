@@ -5,90 +5,89 @@ import { Camera } from 'expo-camera'
 import firebase from 'firebase'
 import LocationComponent from '../components/LocationComponent'
 import MapView, { Marker } from 'react-native-maps';
+import {readLocation} from '../components/FirebaseComponent'
 import * as Location from 'expo-location';
 
-function Exit(){
-  navigation.navigate('ARScreen')
+var keys = {"Tyler": "XAcuKHuAXib6JovnqaWpYrJMwRU2", "Alexa": "iRYUmGV2kEagUAazosuLO5UPjOu1", "Asher": "UwEJEtRgFZY0wc7rgBOcXpb4Dln2"}
+
+function loadMarkers(){
+        m = []
+        for(var i of Object.keys(keys)){
+            m.push(<Marker description={i} key={i}
+            coordinate={readLocation(keys[i])}>
+            <View style={styles.marker}></View>
+          </Marker>)
+        }
+        return m
 }
 
-export default class MapScreen extends Component {
-  
+function MapScreen({ navigation }) {
 
-  state = {
-    location: null,
-    errorMessage: null,
-    loaded: false
-  };
+  const [location, setLocation] = useState(null);
+  const [errorMessage, seterrorMessage] = useState(null);
+  const [loaded, setLoaded] = useState('false');
 
-  componentDidMount () {
-    this._getLocationAsync();
-  };
-
-  _getLocationAsync = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-
-    if (status !== 'granted') {
-      this.setState({
-        errorMessage: 'Permission to access location was denied',
-        loaded: true
-      });
-    }
-
-    const userlocation = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
-    this.setState({ location: userlocation, loaded: true, errorMessage: null });
-
-    console.log(JSON.stringify(this.state.location));
-    console.log(JSON.stringify(this.state.location.coords.latitude));
-    console.log(JSON.stringify(this.state.location.coords.longitude));
-
-  };
-render() {
-    if (this.state.loaded) {
-      return (
-        <View style={styles.container}>
-          <MapView
-            style={styles.map}
-            region={{
-              latitude: this.state.location.coords.latitude,
-              longitude: this.state.location.coords.longitude,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421
-            }}
-            showsUserLocation={true}
-            zoomEnabled={true}>
-            <Marker description="Alexa"
-              coordinate={{latitude: 38.856850, longitude: -77.356260}}>
-              <View style={styles.marker}></View>
-            </Marker>
-            <Marker description="Charlotte"
-              coordinate={{latitude: 38.857360, longitude: -77.393370}}>
-              <View style={styles.marker}></View>
-            </Marker>
-            <Marker description="Tyler"
-              coordinate={{latitude: 38.895756, longitude: -77.372213}}>
-              <View style={styles.marker}></View>
-            </Marker>
-            <Marker description="Asher"
-              coordinate={{latitude: 38.906910, longitude: -77.401530}}>
-              <View style={styles.marker}></View>
-            </Marker>
-            <Marker description="Jackson"
-              coordinate={{latitude: 38.867182, longitude: -77.366666}}>
-              <View style={styles.marker}></View>
-            </Marker>
-        </ MapView>
-        <TouchableOpacity onPress={Exit}><Text>Go Back</Text></TouchableOpacity>
-      </View>
-      );
-    } else {
-      return (
-        <View style={styles.container}>
-          <Text>Waiting for current location...</Text>
-        </View>
-      );
-    }
+	const ARScreenPressHandler = () => {
+    navigation.navigate('ARScreen')
   }
+
+  useEffect(() => {
+    
+    async function _getLocationAsync () {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status !== 'granted') {
+          seterrorMessage('Permission to access location was denied');
+          setLoaded('true');
+          return;
+      } else {
+          const userlocation = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
+          setLocation(userlocation);
+          seterrorMessage(null);
+          setLoaded('true');
+  
+          console.log('User Location is: ')
+          console.log(JSON.stringify(location));
+      }
+
+    };
+
+   	_getLocationAsync();
+
+  }, [loaded]);
+
+  if (loaded == 'true') {
+    return (
+       <View style={styles.container}>
+         <MapView 
+           style={styles.map}
+           region={{
+             latitude: location.coords.latitude,
+             longitude: location.coords.longitude,
+             latitudeDelta: 0.0922,
+             longitudeDelta: 0.0421
+           }} 
+           showsUserLocation={true}
+           zoomEnabled={true}>
+           {loadMarkers()}
+       </ MapView>
+       <TouchableOpacity onPress={ARScreenPressHandler} style={styles.button}>
+          <Text style={styles.buttonText}>Back</Text>
+      </TouchableOpacity>
+     </View>
+     );
+   } else {
+     return (
+       <View style={styles.container}>
+         <Text>Waiting for current location...</Text>
+       </View>
+     );
+   }
 }
+
+export default MapScreen;
+
+const dim = Dimensions.get('screen').width / 100
 
 const styles = StyleSheet.create({
   container: {
@@ -98,8 +97,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   map: {
-    position:"absolute",
-    top:0, left:0,
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
   },
@@ -109,4 +106,21 @@ const styles = StyleSheet.create({
     backgroundColor: 'purple',
     borderRadius: 25
   },
+	button: {
+    backgroundColor: "green",
+		margin: 16,
+    bottom:dim*20,
+		right:dim*35,
+		alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 4,
+    elevation: 3,
+  },
+  buttonText: {
+    fontSize: 20,
+    color: '#fff',
+		letterSpacing: 0.25,
+  }, 
 });
