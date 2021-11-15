@@ -43,14 +43,13 @@ export function writeUserData (lat, long) {
 }
 
 export function readLocation (user) {
-  	let long; let lat
-
-  firebase.database().ref('/users/' + user).on('value', snapshot => {
-    long = snapshot.val().lattitude; lat = snapshot.val().longitude
+  return new Promise(function (resolve, reject) {
+    firebase.database().ref('/users/' + user).on('value', snapshot => {
+      const long = snapshot.val().lattitude; const lat = snapshot.val().longitude;
+      console.log("ll",long,lat,user)
+      resolve([lat,long]);
+    })
   })
-
-  console.log('Location is' + long + ' ' + lat)
-  return [long, lat]
 }
 
 export function currentUser () {
