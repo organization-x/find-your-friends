@@ -46,7 +46,8 @@ export function readLocation (user) {
   return new Promise(function (resolve, reject) {
     firebase.database().ref('/users/' + user).on('value', snapshot => {
       const long = snapshot.val().lattitude; const lat = snapshot.val().longitude;
-      console.log("ll",long,lat,user)
+
+      console.log('Location is' + long + ' ' + lat)
       resolve([lat,long]);
     })
   })
@@ -67,14 +68,17 @@ export function makeFriends (friendToAdd) {
   firebase.database().ref('/friends/' + firebase.auth().currentUser.uid).update({
     added: friendsList
   })
-  return 'completed'
+  return 'completed';
 }
 
 export function getFriends () {
-  firebase.database().ref('/friends/' + firebase.auth().currentUser.uid + '/added').on('value', snapshot => {
-    const friendsList = snapshot.val()
+  return new Promise(function (resolve, reject) {
+    firebase.database().ref('/friends/' + firebase.auth().currentUser.uid + '/added').on('value', snapshot => {
+      const friendsList = snapshot.val()
 
-    // This does not return correctly
-    return (friendsList)
+      // This does not return correctly
+      console.log("Friends list in function: " +friendsList);
+      resolve(friendsList);
+    })
   })
 }
