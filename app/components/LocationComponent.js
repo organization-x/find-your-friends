@@ -1,61 +1,51 @@
-import React from 'react';
+import React, {Component, useState, useEffect } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import * as Location from 'expo-location';
 import {writeUserData} from './FirebaseComponent';
 
-class LocationComponent extends React.Component{
+function LocationComponent() {
 
-  state = {
-    markers: [
-    ],
+  const [location, setLocation] = useState(null);
+  const [errorMessage, seterrorMessage] = useState(null);
+  const [loaded, setLoaded] = useState('false');
 
-    coordinate: {
-      latitude: 0,
-      longitude: 0
-    },
+  useEffect(() => {
+    
+    async function _getLocationAsync () {
+      const { status } = await Location.requestForegroundPermissionsAsync();
 
-    location: null,
-    errorMessage: null,
-    loaded: false
-  }
+      if (status !== 'granted') {
+          seterrorMessage('Permission to access location was denied');
+          setLoaded('true');
+          return;
+      } else {
+          const userlocation = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
+          setLocation(userlocation);
+          seterrorMessage(null);
+          setLoaded('true');
   
-  componentDidMount(){
-    this._getLocationAsync();
-  }
+          if (location != null) {
+            console.log(JSON.stringify(location));
+            console.log("Logging User's Location Information");
+            writeUserData(location.coords.latitude,location.coords.longitude);
+          }
+      }
 
-  _getLocationAsync = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
+    };
 
-    if (status !== 'granted') {
-      this.setState({
-        errorMessage: 'Permission to access location was denied',
-        loaded: true
-      });
-    } 
+   	_getLocationAsync();
 
-    const userlocation = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
-    this.setState({ location: userlocation, loaded: true, errorMessage: null });
+  }, [loaded]);
 
-    console.log(JSON.stringify(this.state.location));
-    console.log(JSON.stringify(this.state.location.coords.latitude));
-    console.log(JSON.stringify(this.state.location.coords.longitude));
-    
-    console.log("Logging User's Location Information");
-    writeUserData(this.state.location.coords.latitude,this.state.location.coords.longitude);
-    
-  };
-
-  render() {
-    if (this.state.loaded) {
-      return (
-       null
-      );
-    } else {
-      return (
-          <Text>Waiting for current location...</Text>
-      );
-    }
+  if (loaded == 'true') {
+    return (
+      null
+    );
+  } else {
+    return (
+     <Text>Waiting for current location...</Text>
+    );
   }
 }
 
@@ -79,4 +69,3 @@ const styles = StyleSheet.create({
     borderRadius: 25
   },
 });
-
