@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { render } from 'react-dom'
-import { View, Text, TextInput, Button, Dimensions, ImageBackground, StyleSheet, SafeAreaView } from 'react-native'
+import { View, Text, TextInput, Button, Dimensions, ImageBackground, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native'
 import { makeFriends, currentUser, getFriends, readLocation, clearFriends, writeData} from '../components/FirebaseComponent'
 
 function FriendsListScreen ({ navigation }) {
@@ -30,7 +30,7 @@ function FriendsListScreen ({ navigation }) {
 
     setRevealCode(!revealCode)
     if (revealCode) {
-      setUser('Here is your friend code: ' + currentUser())
+      setUser(currentUser())
     } else {
       setUser('')
     }
@@ -50,41 +50,39 @@ function FriendsListScreen ({ navigation }) {
 
   return (
     <SafeAreaView style={styles.background}>
-      <Button
-        onPress={backButtonNavigator}
-        title='Back Button'
-        style={styles.buttons}
-      />
-      <Button
-        onPress={revealFriendCode}
-        title='Reveal Friend Code'
-        style={styles.buttons}
-      />
-      <Text>{user}</Text>
-      <Text>All your friends: {friends.join(', ')}</Text>
+      <View style ={styles.topContainer}>
+      </View>
+      <View>
+        <TouchableOpacity onPress={revealFriendCode} style={styles.button}>
+          <Text style={styles.buttonText}>Show My Friend Code</Text>
+        </TouchableOpacity>
+      </View>
+      <Text style={styles.screenText}>{user}</Text>
+      <Text style={styles.screenText}></Text>
+      <Text style={styles.screenText}>My friends: {friends.join(', ')}</Text>
       <TextInput
         style={styles.input}
         placeholder='Enter Friend ID!'
         onChangeText={(val) => setAddedFriend(val)}
       />
-      <Text>The friend you want to add is: {addedFriend}</Text>
-      <View style ={styles.buttonsContainer}>
-        <Button
-          onPress={clearFriendsHandler}
-          title='Clear All Friends!'
-          style={styles.buttons}
-        />
-
-        <Button
-          onPress={addFriendHandler}
-          title='Add Friend!'
-          style={styles.buttons}
-        />
+      <Text style={styles.screenText}>The friend you want to add is: {addedFriend}</Text>
+      <View style ={styles.bottomContainer}>
+        <TouchableOpacity onPress={backButtonNavigator} style={styles.button}>
+          <Text style={styles.buttonText}>Back</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={clearFriendsHandler} style={styles.button}>
+          <Text style={styles.buttonText}>Clear All</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={addFriendHandler} style={styles.button}>
+          <Text style={styles.buttonText}>Add Friend</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
 
   )
 }
+
+const dim = Dimensions.get('screen').width / 100
 
 const styles = StyleSheet.create({
   background: {
@@ -106,8 +104,54 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection:'row',
     top: Dimensions.get('screen').width/2
-  }
-
+  },
+  button: {
+    backgroundColor: "green",
+		margin: 16,
+		alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 4,
+    elevation: 3,
+  },
+  buttonText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#fff',
+		letterSpacing: 0.25,
+  }, 
+  headerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000',
+		letterSpacing: 0.25,
+  }, 
+  screenText: {
+    fontSize: 15,
+    color: '#000',
+		letterSpacing: 0.25,
+  },
+  bottomContainer:{
+    flex:1,
+    flexDirection:'row',
+    width: '100%', 
+    height: 75, 
+    backgroundColor: '#DBF1A5', 
+    justifyContent: 'space-between', 
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 0
+  },
+  topContainer:{
+    width: '100%', 
+    height: 50, 
+    backgroundColor: '#DBF1A5', 
+    justifyContent: 'space-between', 
+    alignItems: 'center',
+    position: 'absolute',
+    top: 0
+  },
 })
 
 export default FriendsListScreen
