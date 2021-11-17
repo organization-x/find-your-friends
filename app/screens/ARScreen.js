@@ -41,47 +41,64 @@ function ARScreen ({ navigation }) {
     const [keys, setKeys] = useState({})
     
     useEffect(() => {
-        (async () => {
-            readFriends().then( x=>{ setKeys(x); console.log(keys) })
-
+        async function _getPositionAsync(){
+            const { status } = await Location.requestForegroundPermissionsAsync();
+            if (status === 'granted') {
+                const location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
+                setLocation([location.coords.latitude, location.coords.longitude]);
+                console.log("location", location)
+            }
+        }
+        async function _setKeys(){
+            readFriends().then( x=>{ setKeys(x) })
+        }
+        async function _startCamera(){
             const { status } = await Camera.requestPermissionsAsync()
             setHasPermission(status === 'granted')
-
-            const { status2 } = await Location.requestForegroundPermissionsAsync()
-            if (status2 === 'granted') {
-                let location = await Location.getCurrentPositionAsync({});
-                setLocation(location);
-            }
-            console.log(location)
-            
+        }
+        async function _getFriends(){
             pos = []
             for(var k of Object.values(keys)){
                 readLocation(k).then(x=>{
                     let friend = x
                     if (friend){ pos.push(friend) }
-                }).catch(e => console.log("error catch", e))
+                }).catch(e => console.log("error caught", e))
             }
-        })()
+        }
+        _getPositionAsync()
+        _setKeys()
+        _startCamera()
+        _getFriends()
 
-        /*setSubscription(
+        setSubscription(
             Magnetometer.addListener((data) => {
                 setMagnetometer([data.x, data.z]);
             })
-        );*/
+        );
 
         return () => {
-            if (subscription) { subscription.remove() }
+            if (subscription) { 
+                subscription.remove() 
+            }
             setSubscription(null)
         }
     }, [])
 
     const friendsPressHandler = () => {
         console.log('Friends Button Pressed!')
+        if (subscription) { 
+            subscription.remove() 
+        }
+        setSubscription(null)
         navigation.navigate('FriendsListScreen')
     }
 
     const mapsPressHandler = () => {
         console.log('Maps Button Pressed!')
+        if (subscription) { 
+            subscription.remove() 
+        }
+        setSubscription(null)
         navigation.navigate('MapScreen')
     }
     
