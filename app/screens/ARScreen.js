@@ -9,7 +9,7 @@ import * as Location from 'expo-location'
 
 const { height, width } = Dimensions.get('window')
 
-const keys = { Tyler: 'XAcuKHuAXib6JovnqaWpYrJMwRU2', Alexa: 'iRYUmGV2kEagUAazosuLO5UPjOu1', Asher: 'UwEJEtRgFZY0wc7rgBOcXpb4Dln2' }
+const keys = { Tyler: 'iansdnad2ACJY0RRpC2'}
 
 var friends;
 var pos = []
@@ -102,9 +102,10 @@ function ARScreen ({ navigation }) {
     if (hasPermission === false) {
         return <Text>No access to camera</Text>
     }
-    if (magnetometer===0) {
-        return <Text>Sensor Error</Text>
-    }
+    //if (magnetometer===0) {
+    //    return <Text>Sensor Error</Text>
+    //}
+
     return (
         <View style={styles.container}>
         <Camera style={styles.camera} type={type}>

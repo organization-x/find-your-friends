@@ -43,12 +43,17 @@ export function writeUserData (lat, long) {
 }
 
 export function readLocation (user) {
-  return new Promise(function (resolve, reject) {
+  return new Promise(function (resolve, reject) { 
     firebase.database().ref('/users/' + user).on('value', snapshot => {
-      const long = snapshot.val().lattitude; const lat = snapshot.val().longitude;
-
-      console.log('Location is' + long + ' ' + lat)
-      resolve([lat,long]);
+      try{
+       
+        const long = snapshot.val().lattitude; const lat = snapshot.val().longitude;
+        console.log('Location is' + long + ' ' + lat);
+        resolve([lat,long]);
+      }catch(e){
+        resolve([0,0]);
+      }
+      
     })
   })
 }
@@ -92,6 +97,6 @@ export function getFriends () {
 //This function is for emergencies only
 export function writeData(){
   firebase.database().ref('/friends/' + firebase.auth().currentUser.uid).set({
-    added: ["John"]
+    added: ["No one"]
   })
 }

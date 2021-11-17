@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { render } from 'react-dom'
 import { View, Text, TextInput, Button, Dimensions, ImageBackground, StyleSheet, SafeAreaView } from 'react-native'
-import { makeFriends, currentUser, getFriends, readLocation, clearFriends} from '../components/FirebaseComponent'
+import { makeFriends, currentUser, getFriends, readLocation, clearFriends, writeData} from '../components/FirebaseComponent'
 
 function FriendsListScreen ({ navigation }) {
   const [user, setUser] = useState('')
   const [addedFriend, setAddedFriend] = useState('')
   const [revealCode, setRevealCode] = useState(true)
   const [friends, setFriends] = useState(["Loading...","loading"]);
+
+  writeData();
 
   const backButtonNavigator = () => {
     navigation.navigate('ARScreen')
