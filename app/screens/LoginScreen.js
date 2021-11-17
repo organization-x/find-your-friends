@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import firebase from 'firebase';
 
 import * as Google from 'expo-google-app-auth';
 import { getAuth, onAuthStateChanged, signInWithCredential, GoogleAuthProvider } from "firebase/auth";
 
 
-class LoginScreen extends Component {
+function LoginScreen() {
   isUserEqual = (googleUser, firebaseUser) => {
     if (firebaseUser) {
       var providerData = firebaseUser.providerData;
@@ -30,7 +30,7 @@ class LoginScreen extends Component {
       function(firebaseUser) {
         unsubscribe();
         // Check if we are already signed-in Firebase with the correct user.
-        if (!this.isUserEqual(googleUser, firebaseUser)) {
+        if (!isUserEqual(googleUser, firebaseUser)) {
           // Build Firebase credential with the Google ID token.
           var credential = firebase.auth.GoogleAuthProvider.credential(
             googleUser.idToken,
@@ -87,7 +87,7 @@ class LoginScreen extends Component {
         } else {
           console.log('User already signed-in Firebase.');
         }
-      }.bind(this)
+      }.bind()
     );
   };
   signInWithGoogleAsync = async () => {
@@ -103,7 +103,7 @@ class LoginScreen extends Component {
       });
 
       if (result.type === 'success') {
-        this.onSignIn(result);
+        onSignIn(result);
         return result.accessToken;
       } else {
         return { cancelled: true };
@@ -112,16 +112,15 @@ class LoginScreen extends Component {
       return { error: true };
     }
   };
-  render() {
-    return (
-      <View style={styles.container}>
-        <Button
-          title="Sign In With Google"
-          onPress={() => this.signInWithGoogleAsync()}
-        />
-      </View>
-    );
-  }
+
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity onPress={signInWithGoogleAsync} style={styles.button}>
+          <Text style={styles.buttonText}>Sign In With Google</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
 }
 export default LoginScreen;
 
@@ -133,4 +132,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  button: {
+    backgroundColor: "green",
+		margin: 16,
+		alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 4,
+    elevation: 3,
+  },
+  buttonText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#fff',
+		letterSpacing: 0.25,
+  }, 
 });
