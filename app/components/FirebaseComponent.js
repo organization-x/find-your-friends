@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Text, Image, ImageBackground, StyleSheet, TouchableOpacity, View, Pressable, Dimensions } from 'react-native'
-import { StatusBar } from 'expo-status-bar'
-import { Camera } from 'expo-camera'
+import React from 'react'
+import { Text } from 'react-native'
 import firebase from 'firebase'
 
 if (!firebase.apps.length) {
@@ -18,8 +16,6 @@ if (!firebase.apps.length) {
 } else {
   firebase.app() // if already initialized, use that one
 }
-
-const friends = []
 
 class FirebaseComponent extends React.Component {
   render () {
@@ -42,6 +38,14 @@ export function writeUserData (lat, long) {
   })
 }
 
+export function readFriends () {
+  return new Promise(function (resolve, reject) {
+    firebase.database().ref('/users/' + currentUser()).on('value', snapshot => {
+      resolve(snapshot.val().added)
+    })
+  })
+}
+
 export function readLocation (user) {
   return new Promise(function (resolve, reject) { 
     firebase.database().ref('/users/' + user).on('value', snapshot => {
@@ -51,7 +55,7 @@ export function readLocation (user) {
         console.log('Location is' + long + ' ' + lat);
         resolve([lat,long]);
       }catch(e){
-        resolve([0,0]);
+        resolve(false);
       }
       
     })

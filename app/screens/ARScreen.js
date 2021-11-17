@@ -2,17 +2,16 @@ import React, { useState, useEffect } from 'react'
 import { Text, Image, StyleSheet, TouchableOpacity, View, Dimensions } from 'react-native'
 import { Camera } from 'expo-camera'
 import LocationComponent from '../components/LocationComponent'
-import { readLocation } from '../components/FirebaseComponent'
+import { readLocation, readFriends } from '../components/FirebaseComponent'
 
 import { Magnetometer } from 'expo-sensors'
 import * as Location from 'expo-location'
 
 const { height, width } = Dimensions.get('window')
 
-const keys = { Tyler: 'iansdnad2ACJY0RRpC2'}
-
 var friends;
-var pos = []
+
+var pos = [];
 
 function angleBetween(thisPos, otherPos){
     return Math.atan2(otherPos[0] - thisPos[0], otherPos[1] - thisPos[1])
@@ -26,56 +25,52 @@ function angle (sensor, thisPos, otherPos) {
         var d = Math.atan2(z, x)
         var a = angleBetween(thisPos, otherPos)
         
-        if(a > 0 && d<a-Math.PI){d+=2*Math.PI}
-        else if(a < 0 && d>Math.PI+a){d-=2*Math.PI}
-        angle = ((a-d)/Math.PI+(1/2))*width;
+        if(a > 0 && d < a-Math.PI){d+=2*Math.PI}
+        else if(a < 0 && d > Math.PI+a){d-=2*Math.PI}
+        angle = ((a-d) / Math.PI + (1/2)) * width;
     }
     return angle
 };
 
 function ARScreen ({ navigation }) {
-    const [hasPermission, setHasPermission] = useState(null)
+    const [hasPermission, setHasPermission] = useState("granted")
     const [type, setType] = useState(Camera.Constants.Type.back)
-    const [location, setLocation] = useState([47.773791, -122.206028])
+    const [location, setLocation] = useState([0,0])
     const [subscription, setSubscription] = useState(null)
-    const [magnetometer, setMagnetometer] = useState(0)
-
-    const [friendPositions, setFriendPositions] = useState([[]])
-
+    const [magnetometer, setMagnetometer] = useState([0,0])
+    const [keys, setKeys] = useState({})
+    
     useEffect(() => {
-        for(var k of Object.values(keys)){
-            readLocation(k).then(x=>{
-                friendPositions.push(x)
-            }).catch(e => console.log(e))
-        }
-
         (async () => {
+            readFriends().then( x=>{ setKeys(x); console.log(keys) })
+
             const { status } = await Camera.requestPermissionsAsync()
             setHasPermission(status === 'granted')
 
             const { status2 } = await Location.requestForegroundPermissionsAsync()
             if (status2 === 'granted') {
-                let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
+                let location = await Location.getCurrentPositionAsync({});
                 setLocation(location);
             }
-
+            console.log(location)
+            
+            pos = []
             for(var k of Object.values(keys)){
-                await readLocation(k).then(x=>{
-                    setFriendPositions(x)
-                }).catch(e => console.log(e))
-                console.log("setting pos")
-                pos.push(friendPositions)
+                readLocation(k).then(x=>{
+                    let friend = x
+                    if (friend){ pos.push(friend) }
+                }).catch(e => console.log("error catch", e))
             }
         })()
 
-        setSubscription(
+        /*setSubscription(
             Magnetometer.addListener((data) => {
                 setMagnetometer([data.x, data.z]);
             })
-        );
+        );*/
 
         return () => {
-        if (subscription) { subscription.remove() }
+            if (subscription) { subscription.remove() }
             setSubscription(null)
         }
     }, [])
@@ -92,9 +87,12 @@ function ARScreen ({ navigation }) {
     
     friends = []
     for(var i in pos){
-        friends.push(<View key={i} style={{backgroundColor: "#42f572", width:50, height:50, borderRadius:25, position: 'absolute', left: Number(angle(magnetometer, location, pos[i]))-25, marginTop: 500}} />)
+        if (typeof magnetometer == "object" && typeof location == "object" && typeof pos[i] == "object"){
+            friends.push(<View key={i} style={{backgroundColor: "#42f572", width:50, height:50, borderRadius:25, position: 'absolute', left: angle(magnetometer, location, pos[i])-25, marginTop: 500}} />)
+        } else {
+            console.log("error -", pos[i])
+        }
     }
-    
 
     if (hasPermission === null) {
         return <View />
@@ -102,10 +100,6 @@ function ARScreen ({ navigation }) {
     if (hasPermission === false) {
         return <Text>No access to camera</Text>
     }
-    //if (magnetometer===0) {
-    //    return <Text>Sensor Error</Text>
-    //}
-
     return (
         <View style={styles.container}>
         <Camera style={styles.camera} type={type}>
