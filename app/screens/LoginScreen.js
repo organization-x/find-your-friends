@@ -56,6 +56,12 @@ class LoginScreen extends Component {
                   .then(function(snapshot) {
                     // console.log('Snapshot', snapshot);
                   });
+                firebase
+                  .database()
+                  .ref('/friends/' + firebase.auth().currentUser.uid + '/added')
+                  .set({
+                    added: []
+                  })
               } else {
                 firebase
                   .database()

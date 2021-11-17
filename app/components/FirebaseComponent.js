@@ -71,6 +71,12 @@ export function makeFriends (friendToAdd) {
   return 'completed';
 }
 
+export function clearFriends(){
+  firebase.database().ref('/friends/' + firebase.auth().currentUser.uid).update({
+    added: ["No one"]
+  })
+}
+
 export function getFriends () {
   return new Promise(function (resolve, reject) {
     firebase.database().ref('/friends/' + firebase.auth().currentUser.uid + '/added').on('value', snapshot => {
@@ -80,5 +86,12 @@ export function getFriends () {
       console.log("Friends list in function: " +friendsList);
       resolve(friendsList);
     })
+  })
+}
+
+//This function is for emergencies only
+export function writeData(){
+  firebase.database().ref('/friends/' + firebase.auth().currentUser.uid).set({
+    added: ["John"]
   })
 }
