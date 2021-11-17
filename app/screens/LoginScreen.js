@@ -51,7 +51,10 @@ class LoginScreen extends Component {
                     profile_picture: result.additionalUserInfo.profile.picture,
                     first_name: result.additionalUserInfo.profile.given_name,
                     last_name: result.additionalUserInfo.profile.family_name,
-                    created_at: Date.now()
+                    lattitude: 0,
+                    longitude: 0,
+                    created_at: Date.now(),
+                    last_logged_in: Date.now()
                   })
                   .then(function(snapshot) {
                     // console.log('Snapshot', snapshot);
