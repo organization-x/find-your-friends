@@ -1,5 +1,5 @@
 import React, {Component, useState, useEffect } from 'react'
-import { Text, Image, ImageBackground, StyleSheet, TouchableOpacity, View, Pressable, Dimensions } from 'react-native'
+import { Text, Image, ImageBackground, StyleSheet, TouchableOpacity, View, Pressable, Dimensions, SafeAreaView } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 import { Camera } from 'expo-camera'
 import firebase from 'firebase'
@@ -8,17 +8,18 @@ import MapView, { Marker } from 'react-native-maps';
 import {readLocation} from '../components/FirebaseComponent'
 import * as Location from 'expo-location';
 
-var keys = {"Tyler": "XAcuKHuAXib6JovnqaWpYrJMwRU2", "Alexa": "iRYUmGV2kEagUAazosuLO5UPjOu1", "Asher": "UwEJEtRgFZY0wc7rgBOcXpb4Dln2"}
+// var keys = {"Tyler": "XAcuKHuAXib6JovnqaWpYrJMwRU2", "Alexa": "iRYUmGV2kEagUAazosuLO5UPjOu1", "Asher": "UwEJEtRgFZY0wc7rgBOcXpb4Dln2"}
+var keys = {"Tyler": "il7Pl0dM6uTqtWGXO2ACJY0RRpC2", "Alexa": "nacNo7rkuWWg0sErRUEd42DuEaf2", "Asher": "vfHzjb0ySpPjoKZzgyfrgdh21Cs2"}
 
 function loadMarkers(){
-        m = []
-        for(var i of Object.keys(keys)){
-            m.push(<Marker description={i} key={i}
-            coordinate={readLocation(keys[i])}>
-            <View style={styles.marker}></View>
-          </Marker>)
-        }
-        return m
+  m = []
+  for(var i of Object.keys(keys)){
+      m.push(<Marker description={i} key={i}
+      coordinate={readLocation(keys[i])}>
+      <View style={styles.marker}></View>
+    </Marker>)
+  }
+  return m
 }
 
 function MapScreen({ navigation }) {
@@ -58,7 +59,9 @@ function MapScreen({ navigation }) {
 
   if (loaded == 'true') {
     return (
-       <View style={styles.container}>
+      <SafeAreaView style ={styles.background}>
+         <View style ={styles.topContainer}>
+         </View>
          <MapView 
            style={styles.map}
            region={{
@@ -70,11 +73,13 @@ function MapScreen({ navigation }) {
            showsUserLocation={true}
            zoomEnabled={true}>
            {loadMarkers()}
-       </ MapView>
-       <TouchableOpacity onPress={ARScreenPressHandler} style={styles.button}>
-          <Text style={styles.buttonText}>Back</Text>
-      </TouchableOpacity>
-     </View>
+          </ MapView>
+          <View style ={styles.bottomContainer}>
+            <TouchableOpacity onPress={ARScreenPressHandler} style={styles.button}>
+              <Text style={styles.buttonText}>Back</Text>
+            </TouchableOpacity>
+          </View>
+      </SafeAreaView>
      );
    } else {
      return (
@@ -109,8 +114,6 @@ const styles = StyleSheet.create({
 	button: {
     backgroundColor: "green",
 		margin: 16,
-    bottom:dim*20,
-		right:dim*35,
 		alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 10,
@@ -119,8 +122,34 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   buttonText: {
-    fontSize: 20,
+    fontSize: 15,
+    fontWeight: 'bold',
     color: '#fff',
 		letterSpacing: 0.25,
-  }, 
+  },
+  bottomContainer:{
+    flex:1,
+    flexDirection:'row',
+    width: '100%', 
+    height: 75, 
+    backgroundColor: '#DBF1A5', 
+    justifyContent: 'space-between', 
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 0
+  },
+  topContainer:{
+    width: '100%', 
+    height: 50, 
+    backgroundColor: '#DBF1A5', 
+    justifyContent: 'space-between', 
+    alignItems: 'center',
+    position: 'absolute',
+    top: 0
+  },
+  background: {
+    flex: 1,
+    backgroundColor: 'white',
+    alignItems: 'center'
+  },
 });
