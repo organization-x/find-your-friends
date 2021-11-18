@@ -14,7 +14,10 @@ var friends;
 var pos = [];
 
 function angleBetween(thisPos, otherPos){
-    return Math.atan2(thisPos[0]-otherPos[0], thisPos[1]-otherPos[1])
+    t1 = Math.PI/180 * (90-thisPos[0]); t2 = Math.PI/180 * (90-otherPos[1]);
+    p = Math.Pi/180 * Math.abs(thisPos[1]-otherPos[1])
+    dist = Math.acos(Math.cos(t1)*Math.cos(t2)+Math.sin(t1)*Math.sin(t2)*Math.cos(p))
+    return Math.acos((Math.cos(t2)-Math.cos(t1)(Math.cos(dist)))/(Math.sin(t1)*Math.sin(dist)))
 }
  
 function angle (sensor, thisPos, otherPos) {
