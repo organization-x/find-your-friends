@@ -40,7 +40,7 @@ export function writeUserData (lat, long) {
 
 export function readFriends () {
   return new Promise(function (resolve, reject) {
-    firebase.database().ref('/users/' + currentUser()).on('value', snapshot => {
+    firebase.database().ref('/friends/' + currentUser()).on('value', snapshot => {
       resolve(snapshot.val().added)
     })
   })
@@ -50,7 +50,7 @@ export function readLocation (user) {
   return new Promise(function (resolve, reject) { 
     firebase.database().ref('/users/' + user).on('value', snapshot => {
       try{
-       
+        console.log("trying friend")
         const long = snapshot.val().lattitude; const lat = snapshot.val().longitude;
         console.log('Location is' + long + ' ' + lat);
         resolve([lat,long]);
