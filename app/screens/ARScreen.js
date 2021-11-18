@@ -14,10 +14,12 @@ var friends;
 var pos = [];
 
 function angleBetween(thisPos, otherPos){
-    t1 = Math.PI/180 * (90-thisPos[0]); t2 = Math.PI/180 * (90-otherPos[1]);
-    p = Math.Pi/180 * Math.abs(thisPos[1]-otherPos[1])
-    dist = Math.acos(Math.cos(t1)*Math.cos(t2)+Math.sin(t1)*Math.sin(t2)*Math.cos(p))
-    return Math.acos((Math.cos(t2)-Math.cos(t1)(Math.cos(dist)))/(Math.sin(t1)*Math.sin(dist)))
+    let t1 = Math.PI/180 * (90-thisPos[0]); let t2 = Math.PI/180 * (90-otherPos[1]);
+    let p = Math.PI/180 * Math.abs(thisPos[1]-otherPos[1])
+    let dist = Math.acos(Math.cos(t1)*Math.cos(t2)+Math.sin(t1)*Math.sin(t2)*Math.cos(p))
+    let ret = Math.acos((Math.cos(t2) - Math.cos(t1) * Math.cos(dist))/(Math.sin(t1)*Math.sin(dist)))
+    console.log(180/Math.PI * ret)
+    return ret
 }
  
 function angle (sensor, thisPos, otherPos) {
@@ -25,12 +27,12 @@ function angle (sensor, thisPos, otherPos) {
     if (sensor) {
         let x = sensor[0]; let z = sensor[1];
     
-        var d = Math.atan2(z,x)
+        var d = Math.atan2(z,x) + Math.PI/2
         var a = angleBetween(thisPos, otherPos)
         
         if(a > 0 && d < a-Math.PI){d+=2*Math.PI}
         else if(a < 0 && d > Math.PI+a){d-=2*Math.PI}
-        angle = ((d-a) / Math.PI + (1/2)) * width;
+        angle = ((d-a) * 2.5 / Math.PI + (1/2)) * width;
     }
     return angle
 };
