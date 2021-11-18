@@ -38,7 +38,6 @@ function ARScreen ({ navigation }) {
     const [location, setLocation] = useState([0,0])
     const [subscription, setSubscription] = useState(null)
     const [magnetometer, setMagnetometer] = useState([0,0])
-    const [keys, setKeys] = useState({})
     
     useEffect(() => {
         async function _getPositionAsync(){
@@ -50,15 +49,15 @@ function ARScreen ({ navigation }) {
             }
         }
         async function _setKeys(){
-            readFriends().then( x=>{ setKeys(x) })
+            readFriends().then( x=>{ _getFriends(x)})
         }
         async function _startCamera(){
             const { status } = await Camera.requestPermissionsAsync()
             setHasPermission(status === 'granted')
         }
-        async function _getFriends(){
+        async function _getFriends(i){
             pos = []
-            for(var k of Object.values(keys)){
+            for(var k of i){
                 readLocation(k).then(x=>{
                     let friend = x
                     if (friend){ pos.push(friend) }
@@ -68,7 +67,6 @@ function ARScreen ({ navigation }) {
         _getPositionAsync()
         _setKeys()
         _startCamera()
-        _getFriends()
 
         setSubscription(
             Magnetometer.addListener((data) => {

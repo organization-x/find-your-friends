@@ -1,41 +1,40 @@
-import React, {Component, useState, useEffect } from 'react'
-import { Text, Image, ImageBackground, StyleSheet, TouchableOpacity, View, Pressable, Dimensions, SafeAreaView } from 'react-native'
-import { StatusBar } from 'expo-status-bar'
-import { Camera } from 'expo-camera'
-import firebase from 'firebase'
-import LocationComponent from '../components/LocationComponent'
+import React, {useState, useEffect } from 'react'
+import { Text, StyleSheet, TouchableOpacity, View, Dimensions, SafeAreaView } from 'react-native'
 import MapView, { Marker } from 'react-native-maps';
 import {readLocation} from '../components/FirebaseComponent'
 import * as Location from 'expo-location';
-
-// var keys = {"Tyler": "XAcuKHuAXib6JovnqaWpYrJMwRU2", "Alexa": "iRYUmGV2kEagUAazosuLO5UPjOu1", "Asher": "UwEJEtRgFZY0wc7rgBOcXpb4Dln2"}
-var keys = {"Tyler": "il7Pl0dM6uTqtWGXO2ACJY0RRpC2", "Alexa": "nacNo7rkuWWg0sErRUEd42DuEaf2", "Asher": "vfHzjb0ySpPjoKZzgyfrgdh21Cs2"}
-
-function loadMarkers(){
-  m = []
-  for(var i of Object.keys(keys)){
-      m.push(<Marker description={i} key={i}
-      coordinate={readLocation(keys[i])}>
-      <View style={styles.marker}></View>
-    </Marker>)
-  }
-  return m
-}
 
 function MapScreen({ navigation }) {
 
   const [location, setLocation] = useState(null);
   const [errorMessage, seterrorMessage] = useState(null);
   const [loaded, setLoaded] = useState('false');
+  const [keys, setKeys ] = useState({})
 
 	const ARScreenPressHandler = () => {
     navigation.navigate('ARScreen')
+  }
+
+  function loadMarkers(){
+    m = []
+    for(var i of Object.keys(keys)){
+        m.push(<Marker description={i} key={i}
+        coordinate={readLocation(keys[i])}>
+        <View style={styles.marker}></View>
+      </Marker>)
+    }
+    return m
   }
 
   useEffect(() => {
     
     async function _getLocationAsync () {
       const { status } = await Location.requestForegroundPermissionsAsync();
+
+      async function _setKeys(){
+        readFriends().then( x=>{ setKeys(x) })
+      }
+      _setKeys()
 
       if (status !== 'granted') {
           seterrorMessage('Permission to access location was denied');
