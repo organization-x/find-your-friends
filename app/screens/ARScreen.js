@@ -14,7 +14,7 @@ var friends;
 var pos = [];
 
 function angleBetween(thisPos, otherPos){
-    return Math.atan2(otherPos[0] - thisPos[0], otherPos[1] - thisPos[1])
+    return Math.atan2(thisPos[0]-otherPos[0], thisPos[1]-otherPos[1])
 }
  
 function angle (sensor, thisPos, otherPos) {
@@ -22,12 +22,12 @@ function angle (sensor, thisPos, otherPos) {
     if (sensor) {
         let x = sensor[0]; let z = sensor[1];
     
-        var d = Math.atan2(z, x)
+        var d = Math.atan2(z,x)
         var a = angleBetween(thisPos, otherPos)
         
         if(a > 0 && d < a-Math.PI){d+=2*Math.PI}
         else if(a < 0 && d > Math.PI+a){d-=2*Math.PI}
-        angle = ((a-d) / Math.PI + (1/2)) * width;
+        angle = ((d-a) / Math.PI + (1/2)) * width;
     }
     return angle
 };
@@ -57,6 +57,7 @@ function ARScreen ({ navigation }) {
         }
         async function _getFriends(i){
             pos = []
+            console.log("keys", i)
             for(var k of i){
                 readLocation(k).then(x=>{
                     let friend = x
