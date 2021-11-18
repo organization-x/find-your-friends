@@ -122,34 +122,37 @@ function ARScreen ({ navigation }) {
         return <Text>No access to camera</Text>
     }
     return (
-        <View style={styles.container}>
-        <Camera style={styles.camera} type={type}>
-            <View style={styles.touchView}> 
-            <TouchableOpacity
-                style={styles.mapsTouch}
-                onPress={mapsPressHandler}
-            >
-                <Image
-                style={styles.mapsBtn}
-                source={require('../assets/map_icon.png')}
-                />
-            </TouchableOpacity>
-            <View styles={styles.logo}><Image styles={styles.logo} source={require("../assets/logo.png")}/></View>
-            <TouchableOpacity
-                style={styles.settingsTouch}
-                onPress={friendsPressHandler}
-            >
-                <Image
-                style={styles.settingsBtn}
-                source={require('../assets/friends_icon.png')}
-                />
-            </TouchableOpacity>
+        <SafeAreaView style={styles.background}>
+            <View style ={styles.topContainer}>
             </View>
-            <View styles={styles.viewBottom} />
-            <LocationComponent />
-            {friends}
-        </Camera>
-        </View>
+            <View style={styles.container}>
+                <Camera style={styles.camera} type={type}>
+                    <View style={styles.touchView}> 
+                    </View>
+                    <View styles={styles.viewBottom} />
+                        <LocationComponent />
+                        {friends}
+                </Camera>
+            </View>
+            <View style ={styles.bottomContainer}>
+                <View style ={styles.imageContainer}>
+                    <TouchableOpacity style={styles.mapsTouch} onPress={mapsPressHandler}>
+                        <Image style={styles.mapsBtn} source={require('../assets/map_icon.png')}/>
+                        <Text style={styles.imageText}>Friends Nearby</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style ={styles.imageContainer}>
+                    <TouchableOpacity style={styles.mapsTouch} onPress={mapsPressHandler}>
+                    </TouchableOpacity>
+                </View>
+                <View style ={styles.imageContainer}>
+                    <TouchableOpacity style={styles.settingsTouch} onPress={friendsPressHandler}>
+                        <Image style={styles.settingsBtn} source={require('../assets/friends_icon.png')} />
+                        <Text style={styles.imageText}>My Friends</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </SafeAreaView>
     )
 }
 
@@ -177,7 +180,7 @@ const styles = StyleSheet.create({
     },
     touchView:{
         width: width,
-        height: dim*20,
+        height: 0,
         flexDirection:'row',
         justifyContent:'space-around',
         alignContent:'center',
@@ -185,18 +188,20 @@ const styles = StyleSheet.create({
     },  
     settingsTouch:{ 
         justifyContent:"center",
-        height:dim*20,
+        height:dim*10,      
     },
     mapsTouch:{
-        justifyContent:"center"
+        justifyContent:"center",
+        height:dim*15,
     },
     settingsBtn: {
         width: dim*15,
         height: dim*15,
+        justifyContent:'center'
     },
     mapsBtn:{
-        height: 715/477*dim*10,
-        width:dim*10
+        height:dim*15,
+        width:dim*10,
     },
     logo:{
         width: 15,
@@ -207,7 +212,56 @@ const styles = StyleSheet.create({
     background: {
         flex: 1,
         alignItems: 'center'
-    }
+    },
+    bottomContainer:{
+        flex:1,
+        flexDirection:'row',
+        width: '100%', 
+        height: 75, 
+        backgroundColor: '#DBF1A5', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        position: 'absolute',
+        bottom: 0
+      },
+    topContainer:{
+        width: '100%', 
+        height: 50, 
+        backgroundColor: '#DBF1A5', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        position: 'absolute',
+        top: 0
+      },
+    imageContainer:{
+        flex:1,
+        flexDirection:'column',
+        backgroundColor: '#DBF1A5', 
+        justifyContent:'space-evenly',
+        alignItems:'center'
+      },
+    button: {
+        backgroundColor: "green",
+        margin: 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderRadius: 4,
+        elevation: 3,
+      },
+    buttonText: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: '#fff',
+        letterSpacing: 0.25,
+      }, 
+    imageText: {
+        fontSize: 10,
+        color: '#000',
+        letterSpacing: 0.25,
+        justifyContent: 'space-around',
+      }, 
 })
 
 export default ARScreen
