@@ -61,7 +61,7 @@ function LoginScreen() {
                   });
                 firebase
                   .database()
-                  .ref('/friends/' + firebase.auth().currentUser.uid + '/added')
+                  .ref('/friends/' + firebase.auth().currentUser.uid)
                   .set({
                     added: []
                   })

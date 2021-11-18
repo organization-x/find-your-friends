@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'space-around',
         alignContent:'center',
-        backgroundColor:"#555"
+        backgroundColor:"#DBF1A5"
     },  
     settingsTouch:{ 
         justifyContent:"center",

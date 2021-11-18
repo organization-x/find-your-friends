@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { render } from 'react-dom'
-import { View, Text, TextInput, Button, Dimensions, ImageBackground, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native'
+import { View, Text, TextInput, Button, Dimensions, ImageBackground, StyleSheet, TouchableOpacity, SafeAreaView, Alert} from 'react-native'
 import { makeFriends, currentUser, getFriends, readLocation, clearFriends, writeData} from '../components/FirebaseComponent'
+import Clipboard from 'expo-clipboard';
 
 function FriendsListScreen ({ navigation }) {
   const [user, setUser] = useState('')
@@ -44,6 +44,20 @@ function FriendsListScreen ({ navigation }) {
     clearFriends()
   }
 
+  const copyFriendCodeHandler = () =>{
+    Clipboard.setString(currentUser());
+    Alert.alert(
+      "Friend Code has been copied",
+      "",
+      [
+        {
+          text: "Ok",
+          onPress: () => console.log("Ok Pressed"),
+        },
+      ]
+    );
+  }
+
   if(friends == null){
     friends = ["No friends"];
   }
@@ -52,9 +66,12 @@ function FriendsListScreen ({ navigation }) {
     <SafeAreaView style={styles.background}>
       <View style ={styles.topContainer}>
       </View>
-      <View>
+      <View style = {styles.friendCodeContainer}>
         <TouchableOpacity onPress={revealFriendCode} style={styles.button}>
-          <Text style={styles.buttonText}>Show My Friend Code</Text>
+          <Text style={styles.buttonTextFriends}>Show My Friend Code</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={copyFriendCodeHandler} style={styles.button}>
+          <Text style={styles.buttonTextFriends}>Copy My Friend Code</Text>
         </TouchableOpacity>
       </View>
       <Text style={styles.screenText}>{user}</Text>
@@ -121,6 +138,12 @@ const styles = StyleSheet.create({
     color: '#fff',
 		letterSpacing: 0.25,
   }, 
+  buttonTextFriends: {
+    fontSize: 11.2,
+    fontWeight: 'bold',
+    color: '#fff',
+		letterSpacing: 0.25,
+  },
   headerText: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -152,6 +175,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0
   },
+  friendCodeContainer:{
+    width: '100%', 
+    flexDirection:'row',
+    backgroundColor: '#DBF1A5', 
+    justifyContent: 'space-between', 
+    alignItems: 'center',
+    position: 'absolute',
+    flex:1,
+    top: Dimensions.get('screen').width/2,
+    height: 75, 
+  }
 })
 
 export default FriendsListScreen
