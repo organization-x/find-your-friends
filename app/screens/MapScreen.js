@@ -1,7 +1,7 @@
 import React, {useState, useEffect } from 'react'
 import { Text, StyleSheet, TouchableOpacity, View, Dimensions, SafeAreaView } from 'react-native'
 import MapView, { Marker } from 'react-native-maps';
-import {readLocation} from '../components/FirebaseComponent'
+import {readLocation, readFriends} from '../components/FirebaseComponent'
 import * as Location from 'expo-location';
 
 function MapScreen({ navigation }) {
