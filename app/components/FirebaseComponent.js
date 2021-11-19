@@ -47,17 +47,16 @@ export function readFriends () {
 }
 
 export function readLocation (user) {
-  return new Promise(function (resolve, reject) { 
+  return new Promise(function (resolve, reject) {
     firebase.database().ref('/users/' + user).on('value', snapshot => {
-      try{
-        console.log("trying friend")
-        const long = snapshot.val().lattitude; const lat = snapshot.val().longitude;
-        console.log('Location is' + long + ' ' + lat);
-        resolve([lat,long]);
-      }catch(e){
-        resolve(false);
+      try {
+        console.log('trying friend')
+        const long = snapshot.val().lattitude; const lat = snapshot.val().longitude
+        console.log('Location is' + long + ' ' + lat)
+        resolve([lat, long])
+      } catch (e) {
+        resolve(false)
       }
-      
     })
   })
 }
@@ -77,12 +76,12 @@ export function makeFriends (friendToAdd) {
   firebase.database().ref('/friends/' + firebase.auth().currentUser.uid).update({
     added: friendsList
   })
-  return 'completed';
+  return 'completed'
 }
 
-export function clearFriends(){
+export function clearFriends () {
   firebase.database().ref('/friends/' + firebase.auth().currentUser.uid).update({
-    added: ["No one"]
+    added: ['No one']
   })
 }
 
@@ -92,15 +91,15 @@ export function getFriends () {
       const friendsList = snapshot.val()
 
       // This does not return correctly
-      console.log("Friends list in function: " +friendsList);
-      resolve(friendsList);
+      console.log('Friends list in function: ' + friendsList)
+      resolve(friendsList)
     })
   })
 }
 
-//This function is for emergencies only
-export function writeData(){
+// This function is for emergencies only
+export function writeData () {
   firebase.database().ref('/friends/' + firebase.auth().currentUser.uid).set({
-    added: ["No one"]
+    added: ['No one']
   })
 }
