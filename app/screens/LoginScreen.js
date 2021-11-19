@@ -1,47 +1,45 @@
-import React, { Component } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
-import firebase from 'firebase';
+import React from 'react'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import firebase from 'firebase'
 
-import * as Google from 'expo-google-app-auth';
-import { getAuth, onAuthStateChanged, signInWithCredential, GoogleAuthProvider } from "firebase/auth";
+import * as Google from 'expo-google-app-auth'
 
-
-class LoginScreen extends Component {
+function LoginScreen () {
   isUserEqual = (googleUser, firebaseUser) => {
     if (firebaseUser) {
-      var providerData = firebaseUser.providerData;
-      for (var i = 0; i < providerData.length; i++) {
+      const providerData = firebaseUser.providerData
+      for (let i = 0; i < providerData.length; i++) {
         if (
           providerData[i].providerId ===
             firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
           providerData[i].uid === googleUser.getBasicProfile().getId()
         ) {
           // We don't need to reauth the Firebase connection.
-          return true;
+          return true
         }
       }
     }
-    return false;
-  };
+    return false
+  }
   onSignIn = googleUser => {
-    console.log('Google Auth Response', googleUser);
+    console.log('Google Auth Response', googleUser)
     // We need to register an Observer on Firebase Auth to make sure auth is initialized.
     var unsubscribe = firebase.auth().onAuthStateChanged(
-      function(firebaseUser) {
-        unsubscribe();
+      function (firebaseUser) {
+        unsubscribe()
         // Check if we are already signed-in Firebase with the correct user.
-        if (!this.isUserEqual(googleUser, firebaseUser)) {
+        if (!isUserEqual(googleUser, firebaseUser)) {
           // Build Firebase credential with the Google ID token.
-          var credential = firebase.auth.GoogleAuthProvider.credential(
+          const credential = firebase.auth.GoogleAuthProvider.credential(
             googleUser.idToken,
             googleUser.accessToken
-          );
+          )
           // Sign in with credential from the Google user.
           firebase
             .auth()
             .signInWithCredential(credential)
-            .then(function(result) {
-              console.log('user signed in ');
+            .then(function (result) {
+              console.log('user signed in ')
               if (result.additionalUserInfo.isNewUser) {
                 firebase
                   .database()
@@ -51,70 +49,77 @@ class LoginScreen extends Component {
                     profile_picture: result.additionalUserInfo.profile.picture,
                     first_name: result.additionalUserInfo.profile.given_name,
                     last_name: result.additionalUserInfo.profile.family_name,
-                    created_at: Date.now()
+                    lattitude: 0,
+                    longitude: 0,
+                    created_at: Date.now(),
+                    last_logged_in: Date.now()
                   })
-                  .then(function(snapshot) {
+                  .then(function (snapshot) {
                     // console.log('Snapshot', snapshot);
-                  });
+                  })
+                firebase
+                  .database()
+                  .ref('/friends/' + firebase.auth().currentUser.uid)
+                  .set({
+                    added: []
+                  })
               } else {
                 firebase
                   .database()
                   .ref('/users/' + result.user.uid)
                   .update({
                     last_logged_in: Date.now()
-                  });
+                  })
               }
             })
-            .catch(function(error) {
+            .catch(function (error) {
               // Handle Errors here.
-              var errorCode = error.code;
-              var errorMessage = error.message;
+              const errorCode = error.code
+              const errorMessage = error.message
               // The email of the user's account used.
-              var email = error.email;
+              const email = error.email
               // The firebase.auth.AuthCredential type that was used.
-              var credential = error.credential;
+              const credential = error.credential
               // ...
-            });
+            })
         } else {
-          console.log('User already signed-in Firebase.');
+          console.log('User already signed-in Firebase.')
         }
-      }.bind(this)
-    );
-  };
+      }.bind()
+    )
+  }
   signInWithGoogleAsync = async () => {
-    console.log("attempting Login");
-    console.log(firebase.auth().currentUser);
-    
+    console.log('attempting Login')
+    console.log(firebase.auth().currentUser)
+
     try {
       const result = await Google.logInAsync({
         behavior: 'web',
         androidClientId: '523384189636-omdtfl8j6p7scuqb1rbr1l547272ovh0.apps.googleusercontent.com',
         iosClientId: '523384189636-7ojnd8udgft8kkdsrhu8fs5q789rpf9r.apps.googleusercontent.com',
-        scopes: ['profile', 'email'],
-      });
+        scopes: ['profile', 'email']
+      })
 
       if (result.type === 'success') {
-        this.onSignIn(result);
-        return result.accessToken;
+        onSignIn(result)
+        return result.accessToken
       } else {
-        return { cancelled: true };
+        return { cancelled: true }
       }
     } catch (e) {
-      return { error: true };
+      return { error: true }
     }
-  };
-  render() {
-    return (
-      <View style={styles.container}>
-        <Button
-          title="Sign In With Google"
-          onPress={() => this.signInWithGoogleAsync()}
-        />
-      </View>
-    );
   }
+
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity onPress={signInWithGoogleAsync} style={styles.button}>
+        <Text style={styles.buttonText}>Sign In With Google</Text>
+      </TouchableOpacity>
+    </View>
+  )
 }
-export default LoginScreen;
+export default LoginScreen
 
 const styles = StyleSheet.create({
   container: {
@@ -124,4 +129,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-});
+  button: {
+    backgroundColor: 'green',
+    margin: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 4,
+    elevation: 3
+  },
+  buttonText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#fff',
+    letterSpacing: 0.25
+  }
+})
