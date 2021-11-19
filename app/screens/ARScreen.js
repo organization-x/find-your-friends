@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Text, Image, StyleSheet, TouchableOpacity, View, Dimensions } from 'react-native'
+import { Text, Image, StyleSheet, TouchableOpacity, View, Dimensions, SafeAreaView} from 'react-native'
 import { Camera } from 'expo-camera'
 import LocationComponent from '../components/LocationComponent'
 import { readLocation, readFriends } from '../components/FirebaseComponent'

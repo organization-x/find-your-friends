@@ -55,14 +55,14 @@ function LoginScreen () {
                     last_logged_in: Date.now()
                   })
                   .then(function (snapshot) {
-                    // console.log('Snapshot', snapshot);
+                    firebase
+                    .database()
+                    .ref('/friends/' + firebase.auth().currentUser.uid)
+                    .set({
+                      added: [""]
                   })
-                firebase
-                  .database()
-                  .ref('/friends/' + firebase.auth().currentUser.uid)
-                  .set({
-                    added: []
                   })
+                
               } else {
                 firebase
                   .database()
