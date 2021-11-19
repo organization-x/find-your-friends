@@ -5,7 +5,7 @@
     "owner": "ai-camp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./app/assets/icon.png",
+    "icon": "./app/assets/ARGaiaIconIOS.png",
     "splash": {
       "image": "./app/assets/splash.png",
       "resizeMode": "contain",
@@ -26,8 +26,8 @@
       "package": "com.aicamp.findmyfriends",
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./app/assets/adaptive-icon.png",
-        "backgroundColor": "#8A8AF4"
+        "foregroundImage": "./app/assets/ARGaiaIconAndroid.png",
+        "backgroundColor": "#000000"
       }
     },
     "web": {
