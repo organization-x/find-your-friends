@@ -20,7 +20,12 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.aicamp.findmyfriends",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "config" : {
+        "googleSignIn" : {
+          "reservedClientID" : "com.googleusercontent.apps.523384189636-b5lmlo27s13fhd6o1qa02kujbrm25ubd"
+        }
+      }
     },
     "android": {
       "package": "com.aicamp.findmyfriends",
