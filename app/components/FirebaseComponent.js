@@ -2,6 +2,8 @@ import React from 'react'
 import { Text } from 'react-native'
 import firebase from 'firebase'
 
+//Initalizes Firebase object with correct configuration
+//If an object already exists, uses the existing one instead
 if (!firebase.apps.length) {
   firebase.initializeApp({
 	  apiKey: 'AIzaSyDEKDFIbbbameAcQprTrCaOfCCF6FSajCI',
@@ -25,6 +27,8 @@ class FirebaseComponent extends React.Component {
   }
 }
 
+//Function to write a section of the database
+//This writes to data belonging to the user
 export function writeUserData (lat, long) {
   firebase.database().ref('users/' + firebase.auth().currentUser.uid).update({
     // email: email,
@@ -38,6 +42,7 @@ export function writeUserData (lat, long) {
   })
 }
 
+//Asynchronous call to read friends from the database
 export function readFriends () {
   return new Promise(function (resolve, reject) {
     firebase.database().ref('/friends/' + currentUser()).on('value', snapshot => {
@@ -46,6 +51,7 @@ export function readFriends () {
   })
 }
 
+//Asynchronous call to read location from the database
 export function readLocation (user) {
   return new Promise(function (resolve, reject) {
     firebase.database().ref('/users/' + user).on('value', snapshot => {
@@ -61,10 +67,12 @@ export function readLocation (user) {
   })
 }
 
+//returns the firebase user
 export function currentUser () {
   return firebase.auth().currentUser.uid
 }
 
+//Makes Friend from string in database
 export function makeFriends (friendToAdd) {
   let friendsList
   firebase.database().ref('/friends/' + firebase.auth().currentUser.uid + '/added').on('value', snapshot => {
@@ -79,12 +87,14 @@ export function makeFriends (friendToAdd) {
   return 'completed'
 }
 
+//clears friend on database
 export function clearFriends () {
   firebase.database().ref('/friends/' + firebase.auth().currentUser.uid).update({
     added: ['No one']
   })
 }
 
+//gets friends from database
 export function getFriends () {
   return new Promise(function (resolve, reject) {
     firebase.database().ref('/friends/' + firebase.auth().currentUser.uid + '/added').on('value', snapshot => {
