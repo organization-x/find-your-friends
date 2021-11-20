@@ -27,12 +27,12 @@ function angle (sensor, thisPos, otherPos) {
     if (sensor) {
         const x = sensor[0]; const z = sensor[1]
 
-        let d = Math.atan2(z, x) + Math.PI / 2
+        let d = Math.atan2(x, z) - Math.PI / 2
         let a = angleBetween(thisPos, otherPos)
 
         // makes sure the value does't wrap while on screen
         if (a > 0 && d < a - Math.PI) { d += 2 * Math.PI } else if (a < 0 && d > Math.PI + a) { d -= 2 * Math.PI }
-        angle = ((d - a) * 2.5 / Math.PI + (1 / 2)) * width
+        angle = ((a - d) * 2.5 / Math.PI + (1 / 2)) * width
     }
     return angle
 }
