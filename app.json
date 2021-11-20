@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "Find my Friends",
-    "slug": "findmyfriends",
+    "name": "ARGaia",
+    "slug": "argaia",
     "owner": "ai-camp",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./app/assets/ARGaiaIconIOS.png",
     "splash": {
@@ -23,12 +23,13 @@
       "googleServicesFile": "./GoogleService-Info.plist",
       "config" : {
         "googleSignIn" : {
-          "reservedClientID" : "com.googleusercontent.apps.523384189636-b5lmlo27s13fhd6o1qa02kujbrm25ubd"
+          "reservedClientId" : "com.googleusercontent.apps.523384189636-b5lmlo27s13fhd6o1qa02kujbrm25ubd"
         }
       }
     },
     "android": {
       "package": "com.aicamp.findmyfriends",
+      "versionCode": 2,
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/ARGaiaIconAndroid.png",
@@ -38,7 +39,7 @@
     "web": {
       "favicon": "./app/assets/favicon.png"
     },
-    "description": "Find your Friends!",
+    "description": "Find your Friends in AR!",
     "githubUrl": "https://github.com/organization-x/find-your-friends"
   }
 }
