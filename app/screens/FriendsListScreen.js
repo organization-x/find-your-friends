@@ -9,12 +9,15 @@ function FriendsListScreen ({ navigation }) {
   const [revealCode, setRevealCode] = useState(true)
   const [friends, setFriends] = useState(['Loading...', 'loading'])
 
+  //This ensures that the friend data list exists
   writeData()
 
+  //This is a simple handler, made for the back button, to navigate to the ARScreen
   const backButtonNavigator = () => {
     navigation.navigate('ARScreen')
   }
 
+  //Asynchronous call to getting friends from Firebase 
   useEffect(() => {
     getFriends().then(x => {
       setFriends(x)
@@ -24,10 +27,9 @@ function FriendsListScreen ({ navigation }) {
     })
   }, [])
 
+  // This flips revealCode from true to false or false to true.
+  // The code is then revealed
   const revealFriendCode = () => {
-    // This flips revealCode from true to false or false to true.
-    // The code is then revealed
-
     setRevealCode(!revealCode)
     if (revealCode) {
       setUser(currentUser())
@@ -36,14 +38,17 @@ function FriendsListScreen ({ navigation }) {
     }
   }
 
+  //This handler adds friends. addedFriend is a string that is passed into the makeFriends function
   const addFriendHandler = () => {
     makeFriends(addedFriend)
   }
 
+  //This handler clears all friends. The clearFriends function is called. 
   const clearFriendsHandler = () => {
     clearFriends()
   }
 
+  //This handler copies the friend code to a device's clipboard. 
   const copyFriendCodeHandler = () => {
     Clipboard.setString(currentUser())
     Alert.alert(
@@ -52,7 +57,6 @@ function FriendsListScreen ({ navigation }) {
       [
         {
           text: 'Ok',
-          onPress: () => console.log('Ok Pressed')
         }
       ]
     )
