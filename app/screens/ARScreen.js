@@ -1,3 +1,7 @@
+/*
+    Main App Screen, displays direction to your friends
+*/
+
 import React, { useState, useEffect } from 'react'
 import { Text, Image, StyleSheet, TouchableOpacity, View, Dimensions, SafeAreaView} from 'react-native'
 import { Camera } from 'expo-camera'
