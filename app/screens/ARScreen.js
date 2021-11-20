@@ -14,12 +14,15 @@ let friends
 let pos = []
 
 function angleBetween (thisPos, otherPos) {
+  /*
   const t1 = Math.PI / 180 * (90 - thisPos[0]); const t2 = Math.PI / 180 * (90 - otherPos[1])
   const p = Math.PI / 180 * Math.abs(thisPos[1] - otherPos[1])
   const dist = Math.acos(Math.cos(t1) * Math.cos(t2) + Math.sin(t1) * Math.sin(t2) * Math.cos(p))
   const ret = Math.acos((Math.cos(t2) - Math.cos(t1) * Math.cos(dist)) / (Math.sin(t1) * Math.sin(dist)))
   console.log(180 / Math.PI * ret)
   return ret
+  */
+  return Math.atan2(otherPos[0]-thisPos[0],otherPos[1]-thisPos[1]);
 }
 
 function angle (sensor, thisPos, otherPos) {
